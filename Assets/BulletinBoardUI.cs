@@ -6,15 +6,16 @@ public class BulletinBoardUI : MonoBehaviour
     [Header("接続するトリガーエリア")]
     public InteractionTrigger triggerZone;
 
-    [Header("表示する掲示板パネル")]
+    [Header("表示する掲示板パネル（CanvasやPanel）")]
     public GameObject boardPanel;
+
+    private bool isOpen = false;
 
     void Start()
     {
-        // 最初はパネルを非表示にしておく
         if (boardPanel != null)
         {
-            boardPanel.SetActive(false);
+            boardPanel.SetActive(false); // 最初は非表示
         }
     }
 
@@ -22,32 +23,37 @@ public class BulletinBoardUI : MonoBehaviour
     {
         if (triggerZone == null || boardPanel == null) return;
 
-        // プレイヤーがエリア内にいて、Eキーが押されたら
-        if (triggerZone.IsOpen && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        // プレイヤーがエリア内にいるときだけEキーを検知
+        if (triggerZone.IsOpen)
         {
-            // パネルの表示・非表示を反転させる
-            bool isActive = boardPanel.activeSelf;
-            boardPanel.SetActive(!isActive);
+            if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+            {
+                isOpen = !isOpen;
+                boardPanel.SetActive(isOpen);
 
-            // 掲示板を開いているときはマウスカーソルを一時的に復活させると操作しやすい！
-            if (!isActive)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                // パネルが開いているときはマウスカーソルを出す、閉じたらロックする
+                if (isOpen)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
             }
-            else
+        }
+        else
+        {
+            // エリアの外に出たら強制的に閉じる
+            if (isOpen)
             {
+                isOpen = false;
+                boardPanel.SetActive(false);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
-        }
-        
-        // エリアの外に出たら強制的にパネルを閉じる
-        if (!triggerZone.IsOpen && boardPanel.activeSelf)
-        {
-            boardPanel.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
     }
 }
