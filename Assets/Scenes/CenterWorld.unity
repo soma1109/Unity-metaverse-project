@@ -6149,6 +6149,7 @@ GameObject:
   - component: {fileID: 1472661765}
   - component: {fileID: 1472661764}
   - component: {fileID: 1472661763}
+  - component: {fileID: 1472661768}
   m_Layer: 0
   m_Name: InteractionZone(house)
   m_TagString: Untagged
@@ -6261,6 +6262,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -0.905, y: 0.24, z: 0.571}
+--- !u!114 &1472661768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472661762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e340d1e747064843a8937944be3d5d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneTransitionTrigger
+  targetSceneName: FromHouse
 --- !u!43 &1593588151
 Mesh:
   m_ObjectHideFlags: 0
