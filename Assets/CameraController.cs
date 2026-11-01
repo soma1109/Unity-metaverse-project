@@ -19,6 +19,22 @@ public class CameraController : MonoBehaviour
         // ★ゲーム開始時にマウスカーソルを画面中央に固定して非表示にする
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if (target == null)
+        {
+            // "Player" というタグがついているオブジェクトをシーン内から自動で探す
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                target = player.transform;
+                Debug.Log("カメラがロボットを自動で見つけて追従を始めました！");
+            }
+            else
+            {
+                Debug.LogWarning("ロボット（Playerタグ）が見つかりませんでした！");
+            }
+        }
+
     }
 
     void LateUpdate()

@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 296989219}
   - component: {fileID: 296989218}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: SpawnPass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 296989217}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d6a47c5f4cc49b4aa6f3bc24e139426, type: 3}
   m_Name: 
@@ -491,6 +491,7 @@ GameObject:
   - component: {fileID: 1090742805}
   - component: {fileID: 1090742804}
   - component: {fileID: 1090742807}
+  - component: {fileID: 1090742808}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -616,6 +617,22 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1090742808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090742803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab2bbcb4389c864e97105de8164f216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraController
+  target: {fileID: 0}
+  distance: 10
+  height: 5
+  rotationSpeed: 2
 --- !u!1 &1533142420
 GameObject:
   m_ObjectHideFlags: 0
