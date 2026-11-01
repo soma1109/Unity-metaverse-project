@@ -49,7 +49,7 @@ public class CameraController : MonoBehaviour
             currentPitch -= mouseDelta.y * rotationSpeed * 0.05f;
 
             // 上を向きすぎたり下を向きすぎたりしないように角度を制限
-            currentPitch = Mathf.Clamp(currentPitch, -10f, 60f);
+            currentPitch = Mathf.Clamp(currentPitch, -45f, 90f);
         }
 
         // 回転の計算
