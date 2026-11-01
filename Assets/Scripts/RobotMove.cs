@@ -25,6 +25,15 @@ public class RobotMove : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+        else
+        {
+            cameraTransform = null;
+        }
+
         // キーボード入力を取得
         float moveX = 0f;
         float moveZ = 0f;
