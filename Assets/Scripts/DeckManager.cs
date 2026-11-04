@@ -41,7 +41,7 @@ public class DeckManager : MonoBehaviour
                 ctrl.IsInDrawPile = true;
             }
             
-            heightOffset += 0.002f;
+            heightOffset += 0.02f;
         }
 
         Debug.Log("すべてのカードを山札として積み上げました！");
