@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FromHouse.unity
     guid: b1c350cf96395204aa03ea44843ef8f1
+  - enabled: 1
+    path: Assets/Scenes/Hanafuda.unity
+    guid: 1ac78aa930d46b848a29d41f9a260d87
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class To_tefuda : MonoBehaviour
 {
-    [Header("移動先（手札）の位置を示す目印のオブジェクト")]
-    [SerializeField] private Transform handTargetPosition;
-
     [Header("今、山札にあるかどうか")]
     private bool isInDrawPile = true;
+
+    [SerializeField] private Vector3 Cardposition = new Vector3(-7f, 2f, 0.5f); // カメラの右下あたり
 
     // マウスでこのカードをクリックした瞬間に発動するUnityの便利機能
     void OnMouseDown()
@@ -20,21 +19,18 @@ public class To_tefuda : MonoBehaviour
 
     void DrawCardToHand()
     {
-        if (handTargetPosition != null)
-        {
-            // 1. 手札の位置と向きに一瞬で移動させる
-            transform.position = handTargetPosition.position;
-            transform.rotation = handTargetPosition.rotation;
+        // 1. メインカメラを「親」に設定する
+        // （※ Camera.main でシーンの中にあるMain Cameraを自動で捕まえてくれるで）
+        transform.SetParent(Camera.main.transform);
 
-            // 2. 「もう山札にはないよ」という状態にフラグを切り替える
-            isInDrawPile = false;
+        // 2. カメラから見た相対的な位置（localPosition）と向きを調整する
+        // 値はお好みの画角に合わせて微調整してな！
+        transform.localPosition = Cardposition;
+        transform.localRotation = Quaternion.Euler(0, 0, 0);       // まっすぐ正面を向かせる
 
-            // 3. 必要なら、ここでレイヤーやZ軸の重なり順（Sorting Orderなど）を調整してもOK
-            Debug.Log("カードを山札から手札に引きました！");
-        }
-        else
-        {
-            Debug.LogWarning("手札の目標地点（handTargetPosition）が設定されてへんよ！");
-        }
+        // 3. フラグを「もう山札にはない」に切り替える
+        isInDrawPile = false;
+
+        Debug.Log("カードを山札から手札（カメラの前）に移動したで！");
     }
 }
