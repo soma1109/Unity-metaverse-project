@@ -17,8 +17,8 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         // ★ゲーム開始時にマウスカーソルを画面中央に固定して非表示にする
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
         if (target == null)
         {
