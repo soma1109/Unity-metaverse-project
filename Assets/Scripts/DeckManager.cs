@@ -1,6 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// プレイヤーの種類を識別するための「列挙型（Enum）」
+public enum PlayerType
+{
+    Player1, // 自分
+    Player2  // 相手（CPUやマルチの対戦相手）
+}
+
 public class DeckManager : MonoBehaviour
 {
     [Header("シーン内にあるすべてのカードのリスト")]
@@ -12,25 +19,30 @@ public class DeckManager : MonoBehaviour
     [Header("プレイヤーのラック（運）のステータス")]
     public int playerLuck = 10;
 
-    [Header("手札の並びに関する設定")]
+    [Header("自分の手札の並びに関する設定")]
     [SerializeField] private float cardSpacing = 0.15f; 
     [SerializeField] private Vector3 handBaseLocalPos = new Vector3(0f, 2f, 15f); 
 
-    // 現在手札にあるカードを管理するリスト
-    private List<GameObject> handCards = new List<GameObject>();
+    [Header("手札の管理（自分と相手を分離）")]
+    private List<GameObject> myHandCards = new List<GameObject>();     // 自分の手札リスト
+    private List<GameObject> enemyHandCards = new List<GameObject>();   // 相手（CPU）の手札リスト
 
     [Header("場札に関する設定")]
-    [SerializeField] private Transform[] fieldSlots; // シーン内に置いた場札の置き場（スロット）のリスト
-    private GameObject[] fieldCards = new GameObject[20]; // どのスロットにどのカードがあるかを保持する配列
+    [SerializeField] private Transform[] fieldSlots; 
+    private GameObject[] fieldCards = new GameObject[18]; 
 
     [Header("山札の厚み設定")]
-    [SerializeField] private float pileSpacing = 0.05f;
+    [SerializeField] private float pileSpacing = 0.1f;
 
-    // 1. 山札をまとめる処理
+    [Header("CPUの手札の表示設定")]
+    [SerializeField] private Transform cpuHandTransform; // CPUの手札を表示する基準の位置
+
+
+    // 1. 山札をまとめる処理（リセット）
     public void PileUpCards()
     {
-        // リセット時は手札も場札の記録もクリアする
-        handCards.Clear();
+        myHandCards.Clear();
+        enemyHandCards.Clear();
         System.Array.Clear(fieldCards, 0, fieldCards.Length);
 
         float heightOffset = 0.0f;
@@ -49,8 +61,8 @@ public class DeckManager : MonoBehaviour
         Debug.Log("すべてのカードを山札として積み上げました！");
     }
 
-    // 2. カードを手札に引く処理
-    public void DrawCardDynamic()
+    // 2. 【拡張】誰が引くかを指定できるカードを引く処理
+    public void DrawCardForPlayer(PlayerType targetPlayer)
     {
         List<GameObject> availableCards = GetAvailableCards();
 
@@ -60,24 +72,44 @@ public class DeckManager : MonoBehaviour
             return;
         }
 
+        // ラックに応じた抽選で1枚選ぶ
         GameObject selectedCard = DecideCardByLuck(availableCards);
-
         To_tefuda cardController = selectedCard.GetComponent<To_tefuda>();
-        if (cardController != null)
+
+        if (cardController == null) return;
+
+        if (targetPlayer == PlayerType.Player1)
         {
-            // A. 手札リストに追加
-            handCards.Add(selectedCard);
-
-            // B. カメラを親にする
-            cardController.DrawCardToHand();
-
-            // C. 並びを更新
-            UpdateHandLayout();
+            // --- 自分の手札に追加する場合 ---
+            myHandCards.Add(selectedCard);
+            cardController.DrawCardToHand(); // カメラを親にする等の処理
+            UpdateHandLayout(myHandCards, PlayerType.Player1);
+            Debug.Log("自分がカードを1枚引いたで！");
+        }
+        else
+        {
+            // --- 相手（CPU等）の手札に追加する場合 ---
+            enemyHandCards.Add(selectedCard);
+            
+            DrawCardToCpu(selectedCard); // CPUの手札位置に移動させる
+            UpdateHandLayout(enemyHandCards, PlayerType.Player2);
+            
+            Debug.Log("相手（CPU）がカードを1枚引いたで！（現在の手札枚数: " + enemyHandCards.Count + "枚）");
         }
     }
 
-    // 手札の横一列の並び替え
-    private void UpdateHandLayout()
+    public void DrawCardToCpu(GameObject card)
+    {
+        enemyHandCards.Add(card);
+
+        card.transform.position = cpuHandTransform.position;
+        card.transform.rotation = cpuHandTransform.rotation;
+
+        Debug.Log("相手（CPU）がカードを1枚引いたで！（現在の手札枚数: " + enemyHandCards.Count + "枚）");
+    }
+
+    // 手札を横一列に綺麗に並べ替える
+    private void UpdateHandLayout(List<GameObject> handCards, PlayerType TargetPlayer)
     {
         int count = handCards.Count;
 
@@ -88,14 +120,30 @@ public class DeckManager : MonoBehaviour
 
             float xOffset = (i - (count - 1) / 2f) * cardSpacing;
 
-            Vector3 targetLocalPos = new Vector3(
-                handBaseLocalPos.x + xOffset,
-                handBaseLocalPos.y,
-                handBaseLocalPos.z
-            );
+            if (TargetPlayer == PlayerType.Player1)
+            {
+                // 自分の手札の場合
+                Vector3 targetLocalPos = new Vector3(
+                    handBaseLocalPos.x + xOffset,
+                    handBaseLocalPos.y,
+                    handBaseLocalPos.z
+                );
 
-            card.transform.localPosition = targetLocalPos;
-            card.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                card.transform.localPosition = targetLocalPos;
+                card.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            }
+            else// 相手（CPU）の手札の場合
+            {
+                Vector3 targetLocalPos = new Vector3(
+                    cpuHandTransform.position.x + xOffset,
+                    cpuHandTransform.position.y,
+                    cpuHandTransform.position.z
+                );
+
+                card.transform.localPosition = targetLocalPos;
+                card.transform.localRotation = Quaternion.Euler(0, 180, 0); // CPUの手札は裏向きにする
+            }
+
         }
     }
 
@@ -105,7 +153,7 @@ public class DeckManager : MonoBehaviour
         return candidates[randomIndex];
     }
 
-    // ★【重要】「手札」にも「場札」にも入っていないカードを、山札の残りとして探す
+    // ★【重要】山札に残っているカードを探す（自分・相手の手札、および場札のどれにも入っていないもの）
     private List<GameObject> GetAvailableCards()
     {
         List<GameObject> list = new List<GameObject>();
@@ -113,14 +161,12 @@ public class DeckManager : MonoBehaviour
         {
             if (card == null) continue;
 
-            // すでに手札に含まれているかチェック
-            bool isInHand = handCards.Contains(card);
-            
-            // すでに場札に含まれているかチェック
+            bool isInMyHand = myHandCards.Contains(card);
+            bool isInEnemyHand = enemyHandCards.Contains(card);
             bool isInField = System.Array.Exists(fieldCards, element => element == card);
 
-            // どっちにも入っていなければ、まだ山札に残っているカードとみなす
-            if (!isInHand && !isInField)
+            // どこにも含まれていなければ、山札の残りとする
+            if (!isInMyHand && !isInEnemyHand && !isInField)
             {
                 list.Add(card);
             }
@@ -128,7 +174,7 @@ public class DeckManager : MonoBehaviour
         return list;
     }
 
-    // 3. 場札にカードを配る処理（指定したスロット番号 `slotIndex` に置く例）
+    // 3. 場札にカードを配る処理
     public void PlaceCardToField(int slotIndex) 
     {
         List<GameObject> availableCards = GetAvailableCards();
@@ -139,52 +185,110 @@ public class DeckManager : MonoBehaviour
             return;
         }
 
-        // スロットの範囲外じゃないかチェック
         if (slotIndex < 0 || slotIndex >= fieldSlots.Length)
         {
             Debug.LogWarning("指定された場札のスロット番号が無効やで！: " + slotIndex);
             return;
         }
 
-        // すでにそのスロットにカードがある場合は置かない（空きマスを維持）
         if (fieldCards[slotIndex] != null)
         {
             Debug.Log("そのマスにはすでにカードがあるで！");
             return;
         }
 
-        // ラックに応じた抽選で1枚選ぶ
         GameObject selectedCard = DecideCardByLuck(availableCards);
 
-        // 場札のスロットの位置と向きに合わせる
         selectedCard.transform.SetParent(fieldSlots[slotIndex]);
         selectedCard.transform.position = fieldSlots[slotIndex].position;
-        selectedCard.transform.rotation = fieldSlots[slotIndex].rotation * Quaternion.Euler(90f, 0, 0);
+        selectedCard.transform.rotation = fieldSlots[slotIndex].rotation;
 
-        // 場札の管理配列に記録する
         fieldCards[slotIndex] = selectedCard;
     }
 
-    // スタートボタンが押されたときに呼ぶメインの処理
+    // 4. ゲームスタートボタンが押されたときの処理
     public void OnGameStartButtonClicked()
     {
         Debug.Log("ゲームスタート！初期配置を開始するで！");
 
-        // 1. まず山札を綺麗にリセット・積み上げる
+        // 山札リセット
         PileUpCards();
 
-        // 2. 先に手札を配る（例：8枚引く）
+        // 自分に8枚配る
         for (int i = 0; i < 8; i++)
         {
-            DrawCardDynamic();
+            DrawCardForPlayer(PlayerType.Player1);
         }
 
-        // 3. その後、ラックを考慮して場札に初期の8枚を配置する（スロット 0 〜 7 番目に置く）
+        // 相手（CPU）に8枚配る（データとして持たせる）
+        for (int i = 0; i < 8; i++)
+        {
+            DrawCardForPlayer(PlayerType.Player2);
+        }
+
+        // 場札に8枚配置する（スロット 0 〜 7）
         for (int i = 0; i < 8; i++)
         {
             PlaceCardToField(i);
         }
 
-        Debug.Log("手札と場札の初期配置がすべて完了したで！");
+        Debug.Log("初期配置がすべて完了したで！");
+    }
+
+    public void OnDrawCardButtonClicked()
+    {
+        DrawCardForPlayer(PlayerType.Player1);
+    }
+
+    // ★CPUのターンを実行する関数
+    public void ExecuteCPUTurn()
+    {
+        Debug.Log("--- CPUのターン開始 ---");
+
+        // 1. まずCPUも山札から1枚引く（すでに手札リストにある前提）
+        DrawCardForPlayer(PlayerType.Player2);
+
+        // 2. CPUの手札（enemyHandCards）にカードが何枚あるかチェック
+        if (enemyHandCards.Count == 0)
+        {
+            Debug.Log("CPUの手札がないから何も出せないで！");
+            return;
+        }
+
+        // 3. 思考ルーチン：手札の中から「どれを出すか」をランダムに1枚選ぶ
+        // （※もっと賢いAIにするなら、ここで点数が高い札や月が一致する札を選ぶ計算を入れる！）
+        int randomCardIndex = Random.Range(0, enemyHandCards.Count);
+        GameObject chosenCard = enemyHandCards[randomCardIndex];
+
+        // 4. 選んだカードを手札リストから削除する
+        enemyHandCards.RemoveAt(randomCardIndex);
+
+        // 5. 実際にカードを場に出す（例として、今空いている最初の場札スロットに置く処理など）
+        PlaceCardToChosenSlot(chosenCard);
+
+        Debug.Log("--- CPUのターン終了 ---");
+    }
+
+    // CPUが選んだカードを場に配置する補助関数
+    private void PlaceCardToChosenSlot(GameObject cardToPlace)
+    {
+        // 空いている場札のスロットを探してそこに置く
+        for (int i = 0; i < fieldSlots.Length; i++)
+        {
+            if (fieldCards[i] == null) // 空きマスを発見！
+            {
+                cardToPlace.transform.SetParent(fieldSlots[i]);
+                cardToPlace.transform.position = fieldSlots[i].position;
+                cardToPlace.transform.rotation = fieldSlots[i].rotation;
+                
+                // 相手の手札だったから、画面に出すためにアクティブ（表示）にする
+                cardToPlace.SetActive(true);
+
+                fieldCards[i] = cardToPlace;
+                Debug.Log("CPUがカードを場札のスロット " + i + " に配置したで！");
+                return;
+            }
+        }
+        Debug.Log("場札に空きがないで……！");
     }
 }
