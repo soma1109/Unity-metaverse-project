@@ -12,18 +12,26 @@ public class DeckManager : MonoBehaviour
     [Header("プレイヤーのラック（運）のステータス")]
     public int playerLuck = 10;
 
-    [Header("【新しく追加】手札の並びに関する設定")]
-    [SerializeField] private float cardSpacing = 0.15f; // カード同士の間隔
-    [SerializeField] private Vector3 handBaseLocalPos = new Vector3(0f, 2f, 15f); // 手札の基準位置（中心）
+    [Header("手札の並びに関する設定")]
+    [SerializeField] private float cardSpacing = 0.15f; 
+    [SerializeField] private Vector3 handBaseLocalPos = new Vector3(0f, 2f, 15f); 
 
     // 現在手札にあるカードを管理するリスト
     private List<GameObject> handCards = new List<GameObject>();
 
+    [Header("場札に関する設定")]
+    [SerializeField] private Transform[] fieldSlots; // シーン内に置いた場札の置き場（スロット）のリスト
+    private GameObject[] fieldCards = new GameObject[20]; // どのスロットにどのカードがあるかを保持する配列
+
+    [Header("山札の厚み設定")]
+    [SerializeField] private float pileSpacing = 0.05f;
+
     // 1. 山札をまとめる処理
     public void PileUpCards()
     {
-        // 山札をリセットするときは手札リストもクリアする
+        // リセット時は手札も場札の記録もクリアする
         handCards.Clear();
+        System.Array.Clear(fieldCards, 0, fieldCards.Length);
 
         float heightOffset = 0.0f;
 
@@ -35,19 +43,13 @@ public class DeckManager : MonoBehaviour
             card.transform.rotation = deckPileTransform.rotation;
             card.transform.SetParent(null);
 
-            To_tefuda ctrl = card.GetComponent<To_tefuda>();
-            if (ctrl != null)
-            {
-                ctrl.IsInDrawPile = true;
-            }
-            
-            heightOffset += 0.02f;
+            heightOffset += pileSpacing;
         }
 
         Debug.Log("すべてのカードを山札として積み上げました！");
     }
 
-    // 2. カードを引く処理
+    // 2. カードを手札に引く処理
     public void DrawCardDynamic()
     {
         List<GameObject> availableCards = GetAvailableCards();
@@ -58,24 +60,23 @@ public class DeckManager : MonoBehaviour
             return;
         }
 
-        // ラックに応じた抽選で1枚選ぶ
         GameObject selectedCard = DecideCardByLuck(availableCards);
 
         To_tefuda cardController = selectedCard.GetComponent<To_tefuda>();
         if (cardController != null)
         {
-            // A. 手札リストに新しく追加する
+            // A. 手札リストに追加
             handCards.Add(selectedCard);
 
-            // B. カードをカメラの子どもにして、山札フラグをオフにする
+            // B. カメラを親にする
             cardController.DrawCardToHand();
 
-            // C. 手札全体の並びを再計算して綺麗に並べ替える！
+            // C. 並びを更新
             UpdateHandLayout();
         }
     }
 
-    // ★【重要】手札のカードを横一列に均等に並べる関数
+    // 手札の横一列の並び替え
     private void UpdateHandLayout()
     {
         int count = handCards.Count;
@@ -85,18 +86,14 @@ public class DeckManager : MonoBehaviour
             GameObject card = handCards[i];
             if (card == null) continue;
 
-            // 中央を基準にして、左右に等間隔で広がるオフセット（X座標）を計算する
-            // 例：3枚なら i=0 は左、i=1 は中央、i=2 は右に配置される
             float xOffset = (i - (count - 1) / 2f) * cardSpacing;
 
-            // カメラから見たローカル座標を計算
             Vector3 targetLocalPos = new Vector3(
                 handBaseLocalPos.x + xOffset,
                 handBaseLocalPos.y,
                 handBaseLocalPos.z
             );
 
-            // カードの位置と向きを更新
             card.transform.localPosition = targetLocalPos;
             card.transform.localRotation = Quaternion.Euler(0, 0, 0);
         }
@@ -108,6 +105,7 @@ public class DeckManager : MonoBehaviour
         return candidates[randomIndex];
     }
 
+    // ★【重要】「手札」にも「場札」にも入っていないカードを、山札の残りとして探す
     private List<GameObject> GetAvailableCards()
     {
         List<GameObject> list = new List<GameObject>();
@@ -115,12 +113,78 @@ public class DeckManager : MonoBehaviour
         {
             if (card == null) continue;
 
-            To_tefuda ctrl = card.GetComponent<To_tefuda>();
-            if (ctrl != null && ctrl.IsInDrawPile)
+            // すでに手札に含まれているかチェック
+            bool isInHand = handCards.Contains(card);
+            
+            // すでに場札に含まれているかチェック
+            bool isInField = System.Array.Exists(fieldCards, element => element == card);
+
+            // どっちにも入っていなければ、まだ山札に残っているカードとみなす
+            if (!isInHand && !isInField)
             {
                 list.Add(card);
             }
         }
         return list;
+    }
+
+    // 3. 場札にカードを配る処理（指定したスロット番号 `slotIndex` に置く例）
+    public void PlaceCardToField(int slotIndex) 
+    {
+        List<GameObject> availableCards = GetAvailableCards();
+
+        if (availableCards.Count == 0)
+        {
+            Debug.Log("山札なし！");
+            return;
+        }
+
+        // スロットの範囲外じゃないかチェック
+        if (slotIndex < 0 || slotIndex >= fieldSlots.Length)
+        {
+            Debug.LogWarning("指定された場札のスロット番号が無効やで！: " + slotIndex);
+            return;
+        }
+
+        // すでにそのスロットにカードがある場合は置かない（空きマスを維持）
+        if (fieldCards[slotIndex] != null)
+        {
+            Debug.Log("そのマスにはすでにカードがあるで！");
+            return;
+        }
+
+        // ラックに応じた抽選で1枚選ぶ
+        GameObject selectedCard = DecideCardByLuck(availableCards);
+
+        // 場札のスロットの位置と向きに合わせる
+        selectedCard.transform.SetParent(fieldSlots[slotIndex]);
+        selectedCard.transform.position = fieldSlots[slotIndex].position;
+        selectedCard.transform.rotation = fieldSlots[slotIndex].rotation * Quaternion.Euler(90f, 0, 0);
+
+        // 場札の管理配列に記録する
+        fieldCards[slotIndex] = selectedCard;
+    }
+
+    // スタートボタンが押されたときに呼ぶメインの処理
+    public void OnGameStartButtonClicked()
+    {
+        Debug.Log("ゲームスタート！初期配置を開始するで！");
+
+        // 1. まず山札を綺麗にリセット・積み上げる
+        PileUpCards();
+
+        // 2. 先に手札を配る（例：8枚引く）
+        for (int i = 0; i < 8; i++)
+        {
+            DrawCardDynamic();
+        }
+
+        // 3. その後、ラックを考慮して場札に初期の8枚を配置する（スロット 0 〜 7 番目に置く）
+        for (int i = 0; i < 8; i++)
+        {
+            PlaceCardToField(i);
+        }
+
+        Debug.Log("手札と場札の初期配置がすべて完了したで！");
     }
 }
