@@ -387,6 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
+  cardType: 3
 --- !u!1 &63349893
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,6 +501,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 63349893}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &78074286
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 78074287}
+  m_Layer: 0
+  m_Name: BrightArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &78074287
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78074286}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10, y: 0, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &93383442
 GameObject:
   m_ObjectHideFlags: 0
@@ -881,6 +913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
+  cardType: 3
 --- !u!1 &114005860
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,6 +1069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
+  cardType: 3
 --- !u!1 &150391489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1154,6 +1188,10 @@ MonoBehaviour:
   - {fileID: 442424192}
   pileSpacing: 0.1
   cpuHandTransform: {fileID: 791566666}
+  brightArea: {fileID: 0}
+  animalArea: {fileID: 0}
+  ribbonArea: {fileID: 0}
+  chaffArea: {fileID: 0}
 --- !u!1 &160967866
 GameObject:
   m_ObjectHideFlags: 0
@@ -1309,6 +1347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
+  cardType: 3
 --- !u!1 &164353356
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,6 +1647,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
+  cardType: 3
 --- !u!1 &228016442
 GameObject:
   m_ObjectHideFlags: 0
@@ -1763,6 +1803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
+  cardType: 2
 --- !u!1 &246834899
 GameObject:
   m_ObjectHideFlags: 0
@@ -2226,6 +2267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
+  cardType: 2
 --- !u!1 &310422202
 GameObject:
   m_ObjectHideFlags: 0
@@ -2771,6 +2813,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
+  cardType: 3
 --- !u!1 &377961373
 GameObject:
   m_ObjectHideFlags: 0
@@ -2926,6 +2969,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
+  cardType: 2
 --- !u!1 &389150397
 GameObject:
   m_ObjectHideFlags: 0
@@ -3081,6 +3125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
+  cardType: 1
 --- !u!1 &406613679
 GameObject:
   m_ObjectHideFlags: 0
@@ -3281,6 +3326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
+  cardType: 0
 --- !u!1 &442424191
 GameObject:
   m_ObjectHideFlags: 0
@@ -3629,6 +3675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
+  cardType: 1
 --- !u!1 &468123770
 GameObject:
   m_ObjectHideFlags: 0
@@ -4034,6 +4081,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
+  cardType: 2
 --- !u!1 &514626886
 GameObject:
   m_ObjectHideFlags: 0
@@ -4528,6 +4576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
+  cardType: 1
 --- !u!1 &534742014
 GameObject:
   m_ObjectHideFlags: 0
@@ -4683,6 +4732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
+  cardType: 1
 --- !u!1 &548701131
 GameObject:
   m_ObjectHideFlags: 0
@@ -4951,6 +5001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
+  cardType: 3
 --- !u!1 &609228467
 GameObject:
   m_ObjectHideFlags: 0
@@ -5332,6 +5383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
+  cardType: 3
 --- !u!1 &651969934
 GameObject:
   m_ObjectHideFlags: 0
@@ -5487,6 +5539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
+  cardType: 3
 --- !u!1 &653130854
 GameObject:
   m_ObjectHideFlags: 0
@@ -5673,6 +5726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
+  cardType: 2
 --- !u!1 &676953052
 GameObject:
   m_ObjectHideFlags: 0
@@ -5828,6 +5882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
+  cardType: 1
 --- !u!1 &715506915
 GameObject:
   m_ObjectHideFlags: 0
@@ -5983,6 +6038,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
+  cardType: 3
 --- !u!1 &741532409
 GameObject:
   m_ObjectHideFlags: 0
@@ -6169,6 +6225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
+  cardType: 3
 --- !u!1 &750200131
 GameObject:
   m_ObjectHideFlags: 0
@@ -6694,6 +6751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
+  cardType: 1
 --- !u!1 &846049583
 GameObject:
   m_ObjectHideFlags: 0
@@ -6880,6 +6938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
+  cardType: 2
 --- !u!1 &861255387
 GameObject:
   m_ObjectHideFlags: 0
@@ -7035,6 +7094,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
+  cardType: 3
 --- !u!1 &868032277
 GameObject:
   m_ObjectHideFlags: 0
@@ -7478,6 +7538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
+  cardType: 3
 --- !u!1 &901122938
 GameObject:
   m_ObjectHideFlags: 0
@@ -7905,6 +7966,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
+  cardType: 0
 --- !u!1 &951912912
 GameObject:
   m_ObjectHideFlags: 0
@@ -8060,6 +8122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
+  cardType: 1
 --- !u!1 &981172166
 GameObject:
   m_ObjectHideFlags: 0
@@ -8215,6 +8278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
+  cardType: 0
 --- !u!1 &983485996
 GameObject:
   m_ObjectHideFlags: 0
@@ -8370,6 +8434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
+  cardType: 3
 --- !u!1 &1007754676
 GameObject:
   m_ObjectHideFlags: 0
@@ -8556,6 +8621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
+  cardType: 2
 --- !u!1 &1033525361
 GameObject:
   m_ObjectHideFlags: 0
@@ -8936,6 +9002,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
+  cardType: 1
 --- !u!1 &1099374727
 GameObject:
   m_ObjectHideFlags: 0
@@ -9235,6 +9302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
+  cardType: 3
 --- !u!1 &1158361790
 GameObject:
   m_ObjectHideFlags: 0
@@ -9678,6 +9746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
+  cardType: 3
 --- !u!1 &1244976202
 GameObject:
   m_ObjectHideFlags: 0
@@ -10007,6 +10076,37 @@ RectTransform:
   m_AnchoredPosition: {x: 24.24, y: 12.06}
   m_SizeDelta: {x: 209.7394, y: 69.7368}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1326519778
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1326519779}
+  m_Layer: 0
+  m_Name: ChaffArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1326519779
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326519778}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20, y: 0, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1334696150
 GameObject:
   m_ObjectHideFlags: 0
@@ -10162,6 +10262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
+  cardType: 2
 --- !u!1 &1341387541
 GameObject:
   m_ObjectHideFlags: 0
@@ -10317,6 +10418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
+  cardType: 3
 --- !u!1 &1345035743
 GameObject:
   m_ObjectHideFlags: 0
@@ -10472,6 +10574,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
+  cardType: 2
 --- !u!1 &1350528457
 GameObject:
   m_ObjectHideFlags: 0
@@ -10884,6 +10987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
+  cardType: 3
 --- !u!1 &1429066819
 GameObject:
   m_ObjectHideFlags: 0
@@ -11039,6 +11143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
+  cardType: 1
 --- !u!1 &1440424838
 GameObject:
   m_ObjectHideFlags: 0
@@ -11194,6 +11299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
+  cardType: 0
 --- !u!1 &1442704962
 GameObject:
   m_ObjectHideFlags: 0
@@ -11575,6 +11681,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
+  cardType: 0
 --- !u!1 &1541424417
 GameObject:
   m_ObjectHideFlags: 0
@@ -12285,6 +12392,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
+  cardType: 3
 --- !u!1 &1606800801
 GameObject:
   m_ObjectHideFlags: 0
@@ -12666,6 +12774,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
+  cardType: 2
 --- !u!1 &1650642397
 GameObject:
   m_ObjectHideFlags: 0
@@ -12821,6 +12930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
+  cardType: 1
 --- !u!1 &1652325844
 GameObject:
   m_ObjectHideFlags: 0
@@ -13335,6 +13445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
+  cardType: 3
 --- !u!1 &1752406390
 GameObject:
   m_ObjectHideFlags: 0
@@ -13956,6 +14067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
+  cardType: 3
 --- !u!1 &1783405424
 GameObject:
   m_ObjectHideFlags: 0
@@ -14381,6 +14493,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 459933108}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1 &1917712376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1917712377}
+  m_Layer: 0
+  m_Name: RibbonArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1917712377
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1917712376}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 0, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1943206786
 GameObject:
   m_ObjectHideFlags: 0
@@ -14706,6 +14849,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
+  cardType: 3
+--- !u!1 &1999651656
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1999651657}
+  m_Layer: 0
+  m_Name: AnimalArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1999651657
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999651656}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2011541998
 GameObject:
   m_ObjectHideFlags: 0
@@ -15004,6 +15179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
+  cardType: 3
 --- !u!1 &2055205266
 GameObject:
   m_ObjectHideFlags: 0
@@ -15749,10 +15925,14 @@ SceneRoots:
   - {fileID: 2011542002}
   - {fileID: 1033525365}
   - {fileID: 1975783023}
-  - {fileID: 150391490}
   - {fileID: 1765599336}
   - {fileID: 1600991814}
   - {fileID: 1322635934}
   - {fileID: 913523794}
   - {fileID: 791566666}
   - {fileID: 406613680}
+  - {fileID: 150391490}
+  - {fileID: 78074287}
+  - {fileID: 1999651657}
+  - {fileID: 1917712377}
+  - {fileID: 1326519779}

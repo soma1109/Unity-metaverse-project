@@ -38,6 +38,12 @@ public class DeckManager : MonoBehaviour
     [Header("CPUの手札の表示設定")]
     [SerializeField] private Transform cpuHandTransform; // CPUの手札を表示する基準の位置
 
+    [Header("プレイヤーの獲得エリア（種類ごとの置き場）")]
+    [SerializeField] private Transform brightArea; // 光札の置き場
+    [SerializeField] private Transform animalArea; // タネ札の置き場（※仮にanimalAreaなど）
+    [SerializeField] private Transform ribbonArea; // 短冊の置き場
+    [SerializeField] private Transform chaffArea;  // カスの置き場
+
 
     // 1. 山札をまとめる処理（リセット）
     public void PileUpCards()
@@ -326,22 +332,13 @@ public class DeckManager : MonoBehaviour
         // 2. 指定された場札スロットにセットする
         fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
         selectedCard.transform.SetParent(null); // 一旦親を外す
+        Transform targetPosition = fieldSlots[slotIndex];
+        runner.StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
+        selectedCard.transform.SetParent(fieldSlots[slotIndex]);
 
         if (fieldCards[slotIndex] == null)
         {
-            Transform targetPosition = fieldSlots[slotIndex];
-            runner.StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
-        
-            selectedCard.transform.SetParent(fieldSlots[slotIndex]);
             fieldCards[slotIndex] = selectedCard;
-
-        }else
-        {
-            Transform targetPosition = fieldSlots[slotIndex];
-            targetPosition.position += new Vector3(1, 0.1f, 0.5f);
-            runner.StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
-            selectedCard.transform.SetParent(fieldSlots[slotIndex]);
-
         }
 
         // 3. 残った手札の並びを綺麗に再計算して詰める
@@ -359,22 +356,93 @@ public class DeckManager : MonoBehaviour
 
         float elapsedTime = 0f;
 
+        Vector3 targetPosition = targetSlot.position;
+
+        if (fieldCards[slotIndex] != null)
+        {
+            targetPosition = targetPosition + new Vector3(1f, 0.1f, 0.5f); //少しずらす
+        }
+
         // 1秒かけて滑らかに目標地点へ動かす
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / duration;
 
-            card.transform.position = Vector3.Lerp(startPos, targetSlot.position, t);
+            card.transform.position = Vector3.Lerp(startPos, targetPosition, t);
             card.transform.rotation = Quaternion.Lerp(startRot, targetSlot.rotation, t);
 
             yield return null; // 次のフレームまで待つ
         }
 
         // 最後にピタッと位置を合わせる
-        card.transform.position = targetSlot.position;
+        card.transform.position = targetPosition;
         card.transform.rotation = targetSlot.rotation;
 
         Debug.Log("カードがスライドして場にセットされたで！");
+    }
+
+    // 指定したスロットの札が2枚以上になったときに呼ばれる回収関数
+    public IEnumerator CollectAndCategorizeCards(List<GameObject> cardsToCollect, MonoBehaviour runner)
+    {
+        foreach (GameObject card in cardsToCollect)
+        {
+            if (card == null) continue;
+
+            // 1. カードのデータを取得して種類（CardType）を調べる
+            CardData data = card.GetComponent<CardData>();
+            if (data == null) continue;
+
+            // 2. 種類に応じて、どのエリアに持っていくかを決める
+            Transform targetArea = GetTargetAreaByType(data.cardType);
+
+            // 3. 親子関係をいったん外す
+            card.transform.SetParent(null);
+
+            // 4. エリアに向けて滑らかに移動させる（さっきのコルーチンを応用！）
+            yield return runner.StartCoroutine(SlideCardToCollectionArea(card, targetArea));
+        }
+
+        Debug.Log("獲得した札の分類と回収が完了したで！");
+    }
+
+    // カードの種類（CardType）から、対応する置き場を返す関数
+    private Transform GetTargetAreaByType(CardType type)
+    {
+        switch (type)
+        {
+            case CardType.Bright: return brightArea;
+            case CardType.Animal: return animalArea;
+            case CardType.Ribbon: return ribbonArea;
+            case CardType.Chaff:  return chaffArea;
+            default: return chaffArea;
+        }
+    }
+
+    // 1枚ずつコレクションエリアへスライド移動させるコルーチン
+    private IEnumerator SlideCardToCollectionArea(GameObject card, Transform targetArea)
+    {
+        float duration = 0.2f;
+        Vector3 startPos = card.transform.position;
+        Quaternion startRot = card.transform.rotation;
+        
+        // エリアの少しずつ位置をずらして重ねて置くためのオフセット計算（お好みで調整）
+        Vector3 targetPos = targetArea.position + new Vector3(targetArea.childCount * 0.15f, 0, 0);
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+
+            card.transform.position = Vector3.Lerp(startPos, targetPos, t);
+            card.transform.rotation = Quaternion.Lerp(startRot, targetArea.rotation, t);
+
+            yield return null;
+        }
+
+        card.transform.position = targetPos;
+        card.transform.rotation = targetArea.rotation;
+        card.transform.SetParent(targetArea); // 最終的に獲得エリアの子にする
     }
 }
