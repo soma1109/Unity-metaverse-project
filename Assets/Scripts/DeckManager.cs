@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -74,7 +75,7 @@ public class DeckManager : MonoBehaviour
 
         // ラックに応じた抽選で1枚選ぶ
         GameObject selectedCard = DecideCardByLuck(availableCards);
-        To_tefuda cardController = selectedCard.GetComponent<To_tefuda>();
+        CardController cardController = selectedCard.GetComponent<CardController>();
 
         if (cardController == null) return;
 
@@ -290,5 +291,90 @@ public class DeckManager : MonoBehaviour
             }
         }
         Debug.Log("場札に空きがないで……！");
+    }
+
+
+    // GameManagerから安全に呼び出すための公開メソッド
+
+    // ① 場札の配列（fieldCards）を外部から覗き見できるようにする（読み取り専用の公開プロパティやメソッド）
+    public GameObject[] GetFieldCards()
+    {
+        return fieldCards;
+    }
+
+    // ② 自分の手札リスト（myHandCards）を外部から覗き見できるようにする
+    public List<GameObject> GetMyHandCards()
+    {
+        return myHandCards;
+    }
+
+    // ③ 場札を置くスロットの総数（fieldSlots.Length）を教える
+    public int GetFieldSlotCount()
+    {
+        return fieldSlots.Length;
+    }
+
+    // ④ 指定されたカードを、手札から取り除いて指定の場札スロットに配置する実務処理
+    public void PlaceCardFromHandToField(GameObject selectedCard, int slotIndex, MonoBehaviour runner)
+    {
+        // 1. 自分の手札リストからカードを取り除く
+        if (myHandCards.Contains(selectedCard))
+        {
+            myHandCards.Remove(selectedCard);
+        }
+
+        // 2. 指定された場札スロットにセットする
+        fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
+        selectedCard.transform.SetParent(null); // 一旦親を外す
+
+        if (fieldCards[slotIndex] == null)
+        {
+            Transform targetPosition = fieldSlots[slotIndex];
+            runner.StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
+        
+            selectedCard.transform.SetParent(fieldSlots[slotIndex]);
+            fieldCards[slotIndex] = selectedCard;
+
+        }else
+        {
+            Transform targetPosition = fieldSlots[slotIndex];
+            targetPosition.position += new Vector3(1, 0.1f, 0.5f);
+            runner.StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
+            selectedCard.transform.SetParent(fieldSlots[slotIndex]);
+
+        }
+
+        // 3. 残った手札の並びを綺麗に再計算して詰める
+        UpdateHandLayout(myHandCards, PlayerType.Player1);
+
+        Debug.Log("手札からカードを場札のスロット " + slotIndex + " に配置しました！");
+    }
+
+
+    private IEnumerator AnimateAndPlaceCard(GameObject card, Transform targetSlot, int slotIndex)
+    {
+        float duration = 1f; // 移動にかかる時間（秒）
+        Vector3 startPos = card.transform.position;
+        Quaternion startRot = card.transform.rotation;
+
+        float elapsedTime = 0f;
+
+        // 1秒かけて滑らかに目標地点へ動かす
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+
+            card.transform.position = Vector3.Lerp(startPos, targetSlot.position, t);
+            card.transform.rotation = Quaternion.Lerp(startRot, targetSlot.rotation, t);
+
+            yield return null; // 次のフレームまで待つ
+        }
+
+        // 最後にピタッと位置を合わせる
+        card.transform.position = targetSlot.position;
+        card.transform.rotation = targetSlot.rotation;
+
+        Debug.Log("カードがスライドして場にセットされたで！");
     }
 }
