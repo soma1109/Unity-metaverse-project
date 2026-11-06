@@ -30,7 +30,15 @@ public class DeckManager : MonoBehaviour
 
     [Header("場札に関する設定")]
     [SerializeField] private Transform[] fieldSlots; 
-    private GameObject[] fieldCards = new GameObject[18]; 
+    private List<GameObject>[] fieldSlotCardLists = new List<GameObject>[18]; // 場札のスロットごとのカードリスト
+    private void Awake()
+    {
+        // 18個すべての棚の扉を開けて、中に「空のリスト（箱）」を1つずつ入れていく作業
+        for (int i = 0; i < fieldSlotCardLists.Length; i++)
+        {
+            fieldSlotCardLists[i] = new List<GameObject>(); 
+        }
+    }
 
     [Header("山札の厚み設定")]
     [SerializeField] private float pileSpacing = 0.1f;
@@ -50,7 +58,14 @@ public class DeckManager : MonoBehaviour
     {
         myHandCards.Clear();
         enemyHandCards.Clear();
-        System.Array.Clear(fieldCards, 0, fieldCards.Length);
+        // 配列自体を消すのではなく、それぞれのスロットのリストの中身をキレイに空にする！
+        foreach (var slotList in fieldSlotCardLists)
+        {
+            if (slotList != null)
+            {
+                slotList.Clear();
+            }
+        }
 
         float heightOffset = 0.0f;
 
@@ -95,13 +110,9 @@ public class DeckManager : MonoBehaviour
         }
         else
         {
-            // --- 相手（CPU等）の手札に追加する場合 ---
-            enemyHandCards.Add(selectedCard);
-            
+            // --- 相手（CPU）の手札に追加する場合 ---
             DrawCardToCpu(selectedCard); // CPUの手札位置に移動させる
             UpdateHandLayout(enemyHandCards, PlayerType.Player2);
-            
-            Debug.Log("相手（CPU）がカードを1枚引いたで！（現在の手札枚数: " + enemyHandCards.Count + "枚）");
         }
     }
 
@@ -170,10 +181,11 @@ public class DeckManager : MonoBehaviour
 
             bool isInMyHand = myHandCards.Contains(card);
             bool isInEnemyHand = enemyHandCards.Contains(card);
-            bool isInField = System.Array.Exists(fieldCards, element => element == card);
+            // 例：指定したカードが、どのフィールドスロットのリストのいずれかに含まれているか探す
+            bool isInAnySlot = System.Array.Exists(fieldSlotCardLists, slotList => slotList != null && slotList.Contains(card));
 
             // どこにも含まれていなければ、山札の残りとする
-            if (!isInMyHand && !isInEnemyHand && !isInField)
+            if (!isInMyHand && !isInEnemyHand && !isInAnySlot)
             {
                 list.Add(card);
             }
@@ -198,7 +210,7 @@ public class DeckManager : MonoBehaviour
             return;
         }
 
-        if (fieldCards[slotIndex] != null)
+        if (fieldSlotCardLists[slotIndex] != null && fieldSlotCardLists[slotIndex].Count > 0)
         {
             Debug.Log("そのマスにはすでにカードがあるで！");
             return;
@@ -210,7 +222,9 @@ public class DeckManager : MonoBehaviour
         selectedCard.transform.position = fieldSlots[slotIndex].position;
         selectedCard.transform.rotation = fieldSlots[slotIndex].rotation;
 
-        fieldCards[slotIndex] = selectedCard;
+        fieldSlotCardLists[slotIndex].Add(selectedCard);
+
+        Debug.Log("場札のスロット " + slotIndex + " にカードを配置");
     }
 
     // 4. ゲームスタートボタンが押されたときの処理
@@ -282,7 +296,7 @@ public class DeckManager : MonoBehaviour
         // 空いている場札のスロットを探してそこに置く
         for (int i = 0; i < fieldSlots.Length; i++)
         {
-            if (fieldCards[i] == null) // 空きマスを発見！
+            if (fieldSlotCardLists[i] == null || fieldSlotCardLists[i].Count == 0) // 空きマスを発見！
             {
                 cardToPlace.transform.SetParent(fieldSlots[i]);
                 cardToPlace.transform.position = fieldSlots[i].position;
@@ -291,7 +305,7 @@ public class DeckManager : MonoBehaviour
                 // 相手の手札だったから、画面に出すためにアクティブ（表示）にする
                 cardToPlace.SetActive(true);
 
-                fieldCards[i] = cardToPlace;
+                fieldSlotCardLists[i].Add(cardToPlace);
                 Debug.Log("CPUがカードを場札のスロット " + i + " に配置したで！");
                 return;
             }
@@ -302,10 +316,10 @@ public class DeckManager : MonoBehaviour
 
     // GameManagerから安全に呼び出すための公開メソッド
 
-    // ① 場札の配列（fieldCards）を外部から覗き見できるようにする（読み取り専用の公開プロパティやメソッド）
-    public GameObject[] GetFieldCards()
+    //fieldSlotCardListsの内容を外部から覗き見できるようにする
+    public List<GameObject>[] GetFieldSlotCardLists()
     {
-        return fieldCards;
+        return fieldSlotCardLists;
     }
 
     // ② 自分の手札リスト（myHandCards）を外部から覗き見できるようにする
@@ -336,9 +350,9 @@ public class DeckManager : MonoBehaviour
         runner.StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
         selectedCard.transform.SetParent(fieldSlots[slotIndex]);
 
-        if (fieldCards[slotIndex] == null)
+        if (fieldSlotCardLists[slotIndex] == null || fieldSlotCardLists[slotIndex].Count == 0)
         {
-            fieldCards[slotIndex] = selectedCard;
+            fieldSlotCardLists[slotIndex].Add(selectedCard);
         }
 
         // 3. 残った手札の並びを綺麗に再計算して詰める
@@ -358,7 +372,7 @@ public class DeckManager : MonoBehaviour
 
         Vector3 targetPosition = targetSlot.position;
 
-        if (fieldCards[slotIndex] != null)
+        if (fieldSlotCardLists[slotIndex] != null && fieldSlotCardLists[slotIndex].Count > 0)
         {
             targetPosition = targetPosition + new Vector3(1f, 0.1f, 0.5f); //少しずらす
         }

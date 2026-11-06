@@ -26,10 +26,10 @@ public class CardController : MonoBehaviour
         }
 
         // 2. クリックされたカードが「場札」に含まれているかチェック
-        GameObject[] fieldCards = deckManager.GetFieldCards();
-        bool isFieldCard = System.Array.Exists(fieldCards, card => card == gameObject);
+        List<GameObject>[] fieldSlotCardLists = deckManager.GetFieldSlotCardLists();
+        bool isInAnySlot = System.Array.Exists(fieldSlotCardLists, slotList => slotList != null && slotList.Contains(gameObject));
 
-        if (isFieldCard)
+        if (isInAnySlot)
         {
             // 場札のカードがクリックされた場合（複数ある場合の選択用）
             gameManager.OnFieldCardClicked(gameObject);

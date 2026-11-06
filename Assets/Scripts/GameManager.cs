@@ -90,15 +90,15 @@ public class GameManager : MonoBehaviour
         if (playedCardData == null) return;
 
         int targetMonth = playedCardData.month;
-        GameObject[] fieldCards = deckManager.GetFieldCards();
+        List<GameObject>[] fieldSlotCardLists = deckManager.GetFieldSlotCardLists();
 
         List<int> matchingFieldSlots = new List<int>();
 
-        for (int i = 0; i < fieldCards.Length; i++)
+        for (int i = 0; i < fieldSlotCardLists.Length; i++)
         {
-            GameObject fieldCard = fieldCards[i];
-            if (fieldCard == null) continue;
+            if (fieldSlotCardLists[i] == null || fieldSlotCardLists[i].Count == 0) continue;
 
+            GameObject fieldCard = fieldSlotCardLists[i][0]; // 1枚目をチェック
             CardData fieldCardData = fieldCard.GetComponent<CardData>();
             if (fieldCardData != null && fieldCardData.month == targetMonth)
             {
@@ -128,14 +128,14 @@ public class GameManager : MonoBehaviour
         if (playedCardData == null) return;
 
         int targetMonth = playedCardData.month;
-        GameObject[] fieldCards = deckManager.GetFieldCards();
+        List<GameObject>[] fieldSlotCardLists = deckManager.GetFieldSlotCardLists();
 
         List<int> matchingFieldSlots = new List<int>();
-        for (int i = 0; i < fieldCards.Length; i++)
+        for (int i = 0; i < fieldSlotCardLists.Length; i++)
         {
-            GameObject fieldCard = fieldCards[i];
-            if (fieldCard == null) continue;
+            if (fieldSlotCardLists[i] == null || fieldSlotCardLists[i].Count == 0) continue;
 
+            GameObject fieldCard = fieldSlotCardLists[i][0];
             CardData fieldCardData = fieldCard.GetComponent<CardData>();
             if (fieldCardData != null && fieldCardData.month == targetMonth)
             {
@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            int emptySlotIndex = GetLowestEmptyFieldSlot(fieldCards);
+            int emptySlotIndex = GetLowestEmptyFieldSlot(fieldSlotCardLists);
             if (emptySlotIndex != -1)
             {
                 deckManager.PlaceCardFromHandToField(selectedCard, emptySlotIndex, this);
@@ -169,12 +169,12 @@ public class GameManager : MonoBehaviour
     {
         if (!isWaitingForFieldSelection) return;
 
-        GameObject[] fieldCards = deckManager.GetFieldCards();
+        List<GameObject>[] fieldSlotCardLists = deckManager.GetFieldSlotCardLists();
         int clickedSlotIndex = -1;
 
-        for (int i = 0; i < fieldCards.Length; i++)
+        for (int i = 0; i < fieldSlotCardLists.Length; i++)
         {
-            if (fieldCards[i] == clickedFieldCard)
+            if (fieldSlotCardLists[i] != null && fieldSlotCardLists[i].Contains(clickedFieldCard))
             {
                 clickedSlotIndex = i;
                 break;
@@ -205,11 +205,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private int GetLowestEmptyFieldSlot(GameObject[] fieldCards)
+    private int GetLowestEmptyFieldSlot(List<GameObject>[] fieldSlotCardLists)
     {
-        for (int i = 0; i < fieldCards.Length; i++)
+        for (int i = 0; i < fieldSlotCardLists.Length; i++)
         {
-            if (fieldCards[i] == null) return i;
+            if (fieldSlotCardLists[i] == null || fieldSlotCardLists[i].Count == 0) return i;
         }
         return -1;
     }
