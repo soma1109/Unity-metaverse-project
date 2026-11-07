@@ -28,6 +28,10 @@ public class DeckManager : MonoBehaviour
     private List<GameObject> myHandCards = new List<GameObject>();     // 自分の手札リスト
     private List<GameObject> enemyHandCards = new List<GameObject>();   // 相手（CPU）の手札リスト
 
+    [Header("持ち札の管理")]
+    private List<GameObject> myHeldCards = new List<GameObject>();     // 自分の持ち札リスト
+    private List<GameObject> enemyHeldCards = new List<GameObject>();   // 相手（CPU）の持ち札リスト
+
     [Header("場札に関する設定")]
     [SerializeField] private Transform[] fieldSlots; 
     private List<GameObject>[] fieldSlotCardLists = new List<GameObject>[18]; // 場札のスロットごとのカードリスト
@@ -90,7 +94,7 @@ public class DeckManager : MonoBehaviour
 
         if (availableCards.Count == 0)
         {
-            Debug.Log("山札もうないで！");
+            Debug.Log("山札なし");
             return;
         }
 
@@ -106,7 +110,7 @@ public class DeckManager : MonoBehaviour
             myHandCards.Add(selectedCard);
             cardController.DrawCardToHand(); // カメラを親にする等の処理
             UpdateHandLayout(myHandCards, PlayerType.Player1);
-            Debug.Log("自分がカードを1枚引いたで！");
+            Debug.Log("自分がカードを1枚引いたで！（現在の手札枚数: " + myHandCards.Count + "枚）");
         }
         else
         {
@@ -123,7 +127,7 @@ public class DeckManager : MonoBehaviour
         card.transform.position = cpuHandTransform.position;
         card.transform.rotation = cpuHandTransform.rotation;
 
-        Debug.Log("相手（CPU）がカードを1枚引いたで！（現在の手札枚数: " + enemyHandCards.Count + "枚）");
+        Debug.Log("相手（CPU）がカードを1枚引いた（現在の手札枚数: " + enemyHandCards.Count + "枚）");
     }
 
     // 手札を横一列に綺麗に並べ替える
@@ -206,13 +210,13 @@ public class DeckManager : MonoBehaviour
 
         if (slotIndex < 0 || slotIndex >= fieldSlots.Length)
         {
-            Debug.LogWarning("指定された場札のスロット番号が無効やで！: " + slotIndex);
+            Debug.LogWarning("指定された場札のスロット番号が無効: " + slotIndex);
             return;
         }
 
         if (fieldSlotCardLists[slotIndex] != null && fieldSlotCardLists[slotIndex].Count > 0)
         {
-            Debug.Log("そのマスにはすでにカードがあるで！");
+            Debug.Log("そのマスにはすでにカードがある");
             return;
         }
 
@@ -230,7 +234,7 @@ public class DeckManager : MonoBehaviour
     // 4. ゲームスタートボタンが押されたときの処理
     public void OnGameStartButtonClicked()
     {
-        Debug.Log("ゲームスタート！初期配置を開始するで！");
+        Debug.Log("ゲームスタート！初期配置を開始");
 
         // 山札リセット
         PileUpCards();
@@ -253,7 +257,7 @@ public class DeckManager : MonoBehaviour
             PlaceCardToField(i);
         }
 
-        Debug.Log("初期配置がすべて完了したで！");
+        Debug.Log("初期配置がすべて完了");
     }
 
     public void OnDrawCardButtonClicked()
@@ -272,7 +276,7 @@ public class DeckManager : MonoBehaviour
         // 2. CPUの手札（enemyHandCards）にカードが何枚あるかチェック
         if (enemyHandCards.Count == 0)
         {
-            Debug.Log("CPUの手札がないから何も出せないで！");
+            Debug.Log("CPUの手札がないから何も出せない");
             return;
         }
 
@@ -306,11 +310,11 @@ public class DeckManager : MonoBehaviour
                 cardToPlace.SetActive(true);
 
                 fieldSlotCardLists[i].Add(cardToPlace);
-                Debug.Log("CPUがカードを場札のスロット " + i + " に配置したで！");
+                Debug.Log("CPUがカードを場札のスロット " + i + " に配置");
                 return;
             }
         }
-        Debug.Log("場札に空きがないで……！");
+        Debug.Log("場札に空きがない");
     }
 
 
@@ -335,7 +339,7 @@ public class DeckManager : MonoBehaviour
     }
 
     // ④ 指定されたカードを、手札から取り除いて指定の場札スロットに配置する実務処理
-    public void PlaceCardFromHandToField(GameObject selectedCard, int slotIndex, MonoBehaviour runner)
+    public void PlaceCardFromHandToField(GameObject selectedCard, int slotIndex)
     {
         // 1. 自分の手札リストからカードを取り除く
         if (myHandCards.Contains(selectedCard))
@@ -347,13 +351,10 @@ public class DeckManager : MonoBehaviour
         fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
         selectedCard.transform.SetParent(null); // 一旦親を外す
         Transform targetPosition = fieldSlots[slotIndex];
-        runner.StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
+        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
         selectedCard.transform.SetParent(fieldSlots[slotIndex]);
 
-        if (fieldSlotCardLists[slotIndex] == null || fieldSlotCardLists[slotIndex].Count == 0)
-        {
-            fieldSlotCardLists[slotIndex].Add(selectedCard);
-        }
+        fieldSlotCardLists[slotIndex].Add(selectedCard);
 
         // 3. 残った手札の並びを綺麗に再計算して詰める
         UpdateHandLayout(myHandCards, PlayerType.Player1);
@@ -393,7 +394,19 @@ public class DeckManager : MonoBehaviour
         card.transform.position = targetPosition;
         card.transform.rotation = targetSlot.rotation;
 
-        Debug.Log("カードがスライドして場にセットされたで！");
+        Debug.Log("カードがスライドして場にセットされた");
+
+        // ★アニメーションが終わったこの瞬間に、枚数をチェックして回収を呼ぶ！
+        if (fieldSlotCardLists[slotIndex].Count >= 2)
+        {
+            Debug.Log($"スロット {slotIndex} の札が2枚になったので回収を開始");
+
+            List<GameObject> collectedCards = new List<GameObject>(fieldSlotCardLists[slotIndex]);
+            fieldSlotCardLists[slotIndex].Clear();
+
+            // 獲得エリアへの回収アニメーション（これもコルーチン）をここでスタート！
+            StartCoroutine(CollectAndCategorizeCards(collectedCards, this));
+        }
     }
 
     // 指定したスロットの札が2枚以上になったときに呼ばれる回収関数
@@ -409,6 +422,7 @@ public class DeckManager : MonoBehaviour
 
             // 2. 種類に応じて、どのエリアに持っていくかを決める
             Transform targetArea = GetTargetAreaByType(data.cardType);
+            Debug.Log($"カード {card.name} は {data.cardType} なので、{targetArea.name} に回収する");
 
             // 3. 親子関係をいったん外す
             card.transform.SetParent(null);
@@ -417,7 +431,7 @@ public class DeckManager : MonoBehaviour
             yield return runner.StartCoroutine(SlideCardToCollectionArea(card, targetArea));
         }
 
-        Debug.Log("獲得した札の分類と回収が完了したで！");
+        Debug.Log("獲得した札の分類と回収が完了した");
     }
 
     // カードの種類（CardType）から、対応する置き場を返す関数

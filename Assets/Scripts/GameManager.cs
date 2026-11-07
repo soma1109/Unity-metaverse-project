@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
         if (matchingFieldSlots.Count == 1)
         {
             int targetSlotIndex = matchingFieldSlots[0];
-            deckManager.PlaceCardFromHandToField(selectedCard, targetSlotIndex, this);
+            deckManager.PlaceCardFromHandToField(selectedCard, targetSlotIndex);
             Debug.Log("同じ月の場札が1枚だったので自動で合わせました！");
         }
         else
@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
             int emptySlotIndex = GetLowestEmptyFieldSlot(fieldSlotCardLists);
             if (emptySlotIndex != -1)
             {
-                deckManager.PlaceCardFromHandToField(selectedCard, emptySlotIndex, this);
+                deckManager.PlaceCardFromHandToField(selectedCard, emptySlotIndex);
                 Debug.Log("同じ月の場札がないため、一番若い空きスロットに置きました！");
             }
             else
@@ -189,7 +189,7 @@ public class GameManager : MonoBehaviour
                 ResetCardPosition(selectedHandCard);
             }
 
-            deckManager.PlaceCardFromHandToField(pendingCardFromHand, clickedSlotIndex, this);
+            deckManager.PlaceCardFromHandToField(pendingCardFromHand, clickedSlotIndex);
             
             // 状態をすべてリセット
             isWaitingForFieldSelection = false;
