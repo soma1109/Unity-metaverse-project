@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 // プレイヤーの種類を識別するための「列挙型（Enum）」
 public enum PlayerType
@@ -60,11 +61,18 @@ public class PlayerCollection
 
 public class DeckManager : MonoBehaviour
 {
+    [Header("GameManagerの参照")]
+    [SerializeField] private GameManager gameManager;
+
     [Header("シーン内にあるすべてのカードのリスト")]
     [SerializeField] private List<GameObject> allCardsInScene = new List<GameObject>();
 
     [Header("山札として積み上げる基準の位置")]
     [SerializeField] private Transform deckPileTransform;
+
+    [Header("見せ札(一時的にプレイヤーに見えるようにしている札)に関する設定")]
+    [SerializeField] private Transform displayPositionTransform;
+    private List<GameObject> displayCards = new List<GameObject>();
 
     [Header("プレイヤーのラック（運）のステータス")]
     public int playerLuck = 10;
@@ -121,6 +129,7 @@ public class DeckManager : MonoBehaviour
     {
         myHandCards.Clear();
         enemyHandCards.Clear();
+        displayCards.Clear();
         // fieldSlotCardListsのクリア処理(配列自体を消すのではなく、それぞれのスロットのリストの中身をキレイに空にする)
         foreach (var slotList in fieldSlotCardLists)
         {
@@ -231,6 +240,82 @@ public class DeckManager : MonoBehaviour
         }
     }
 
+    //カードの位置移動汎用関数
+    private IEnumerator MoveCardToPosition(GameObject card, Vector3 targetPosition, Quaternion targetRotation, float duration)
+    {
+        Vector3 startPos = card.transform.position;
+        Quaternion startRot = card.transform.rotation;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+
+            card.transform.position = Vector3.Lerp(startPos, targetPosition, t);
+            card.transform.rotation = Quaternion.Lerp(startRot, targetRotation, t);
+
+            yield return null; // 次のフレームまで待つ
+        }
+
+        // 最後にピタッと位置を合わせる
+        card.transform.position = targetPosition;
+        card.transform.rotation = targetRotation;
+    }
+
+    // 山札から場札にカードを出す処理
+    public void PlaceCardFromDisplayToField(GameObject selectedCard, int slotIndex)
+    {
+        // 見せ札リストからカードを取り除く
+        if (displayCards.Contains(selectedCard))
+        {
+            displayCards.Remove(selectedCard);
+        }
+
+        // 2. 指定された場札スロットにセットする
+        fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
+        selectedCard.transform.SetParent(null); // 一旦親を外す
+        Transform targetPosition = fieldSlots[slotIndex];
+        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
+        selectedCard.transform.SetParent(fieldSlots[slotIndex]);
+
+        fieldSlotCardLists[slotIndex].Add(selectedCard);
+
+        //displayの並びをきれいにする処理はここに！
+
+        Debug.Log("見せ札からカードを場札のスロット " + slotIndex + " に配置しました！");
+    }
+
+    //山札をdisplayに置く処理
+    public void onDrawCardToDisplayButtonClicked()
+    {
+        PlaceCardFromDeckToDisplay();
+    }
+
+    public void PlaceCardFromDeckToDisplay()
+    {
+        List<GameObject> availableCards = GetAvailableCards();
+
+        if (availableCards.Count == 0)
+        {
+            Debug.Log("山札なし！");
+            return;
+        }
+
+        // ランダムに1枚選ぶ
+        GameObject selectedCard = DecideCardByLuck(availableCards);
+
+        // displayに置く
+        displayCards.Add(selectedCard);
+        Vector3 displayPosition = displayPositionTransform.position;
+        Quaternion displayRotation = displayPositionTransform.rotation;
+        StartCoroutine(MoveCardToPosition(selectedCard, displayPosition, displayRotation, 0.5f));
+        selectedCard.transform.SetParent(displayPositionTransform);
+
+        Debug.Log("山札から見せ札にカードを配置しました！（現在の見せ札枚数: " + displayCards.Count + "枚）");
+    }
+
     //持ち札の横にずらして表示する
     private void UpdateHeldLayout(PlayerType targetPlayer)
     {
@@ -294,11 +379,13 @@ public class DeckManager : MonoBehaviour
 
             bool isInMyHand = myHandCards.Contains(card);
             bool isInEnemyHand = enemyHandCards.Contains(card);
+            bool inInDisplay = displayCards.Contains(card);
+            bool isInHeld = playerCollection.GetAllLists().Any(list => list.Contains(card)) || enemyCollection.GetAllLists().Any(list => list.Contains(card));
             // 例：指定したカードが、どのフィールドスロットのリストのいずれかに含まれているか探す
             bool isInAnySlot = System.Array.Exists(fieldSlotCardLists, slotList => slotList != null && slotList.Contains(card));
 
             // どこにも含まれていなければ、山札の残りとする
-            if (!isInMyHand && !isInEnemyHand && !isInAnySlot)
+            if (!isInMyHand && !isInEnemyHand && !isInAnySlot && !inInDisplay && !isInHeld)
             {
                 list.Add(card);
             }
@@ -439,6 +526,12 @@ public class DeckManager : MonoBehaviour
     public List<GameObject> GetMyHandCards()
     {
         return myHandCards;
+    }
+
+    // ② 見せ札リスト（displayCards）を外部から覗き見できるようにする
+    public List<GameObject> GetDisplayCards()
+    {
+        return displayCards;
     }
 
     // ③ 場札を置くスロットの総数（fieldSlots.Length）を教える

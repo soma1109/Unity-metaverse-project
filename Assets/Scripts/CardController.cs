@@ -25,6 +25,15 @@ public class CardController : MonoBehaviour
             return;
         }
 
+        // クリックされたカードが「見せ札」に含まれているかチェック
+        List<GameObject> displayCards = deckManager.GetDisplayCards();
+        if (displayCards.Contains(gameObject))
+        {
+            // 見せ札のカードがクリックされた場合（1回目＝選択、2回目＝決定の判定へ）
+            gameManager.OnDisplayCardClicked(gameObject);
+            return;
+        }
+
         // 2. クリックされたカードが「場札」に含まれているかチェック
         List<GameObject>[] fieldSlotCardLists = deckManager.GetFieldSlotCardLists();
         bool isInAnySlot = System.Array.Exists(fieldSlotCardLists, slotList => slotList != null && slotList.Contains(gameObject));

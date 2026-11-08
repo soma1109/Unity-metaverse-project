@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
 
     // --- 選択状態を管理する変数 ---
     private GameObject selectedHandCard = null;        // 現在選択（持ち上げ）されている手札のカード
-    private bool isWaitingForFieldSelection = false;   // 同じ月が複数あって場札を選ぶのを待っている状態か
-    private GameObject pendingCardFromHand = null;     
+    private GameObject selectedDisplayCard = null;     // 現在選択（持ち上げ）されている見せ札のカード
+    private bool isWaitingForFieldSelection = false;   // 同じ月が複数あって場札を選ぶのを待っている状態か    
     private List<int> validTargetFieldSlots = new List<int>();
 
     // プレイヤーが手札のカードをクリックしたときの処理
@@ -52,7 +52,6 @@ public class GameManager : MonoBehaviour
                 Debug.Log("選択をキャンセルしたで！");
                 ResetCardPosition(selectedHandCard);
                 isWaitingForFieldSelection = false;
-                pendingCardFromHand = null;
                 validTargetFieldSlots.Clear();
                 selectedHandCard = null;
                 return;
@@ -110,7 +109,7 @@ public class GameManager : MonoBehaviour
         if (matchingFieldSlots.Count > 1)
         {
             isWaitingForFieldSelection = true;
-            pendingCardFromHand = selectedCard;
+            selectedHandCard = selectedCard;
             validTargetFieldSlots = matchingFieldSlots;
             Debug.Log("同じ月の場札が複数あるで！ 持ち上がったまま、合わせたい場札のカードをどれかクリックしてな！");
         }
@@ -164,6 +163,60 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 見せ札がクリックされたときの処理
+    public void OnDisplayCardClicked(GameObject clickedDisplayCard)
+    {
+        // --- パターン1：すでに別のカードが選択されていて、それとは「違うカード」をクリックした場合 ---
+        if (selectedDisplayCard != null && selectedDisplayCard != clickedDisplayCard)
+        {
+            ResetCardPosition(selectedDisplayCard);
+
+            selectedDisplayCard = clickedDisplayCard;
+            LiftCardUp(selectedDisplayCard);
+            Debug.Log(clickedDisplayCard.name + " を選択した（1回目のクリック）");
+
+            // 新しく選んだカードについて、同じ月の場札が複数あるか事前にチェックする
+            CheckCardMatching(selectedDisplayCard);
+            return;
+        }
+
+        // --- パターン2：「初めて」手札のカードをクリックした場合 ---
+        if (selectedDisplayCard == null)
+        {
+            selectedDisplayCard = clickedDisplayCard;
+            LiftCardUp(selectedDisplayCard);
+            Debug.Log(clickedDisplayCard.name + " を選択した（1回目のクリック）");
+
+            // 選んだカードについて、同じ月の場札が複数あるか事前にチェックする
+            CheckCardMatching(selectedDisplayCard);
+            return;
+        }
+
+        // --- パターン3：すでに選択されているカードを「もう一度」クリックした場合（2回目のクリック＝決定！） ---
+        if (selectedDisplayCard == clickedDisplayCard)
+        {
+            // もし「同じ月が複数あるから場の選択を待っている状態」のときに同じ手札をもう一度クリックしたら、選択キャンセルにする
+            if (isWaitingForFieldSelection)
+            {
+                Debug.Log("選択をキャンセルした");
+                ResetCardPosition(selectedDisplayCard);
+                isWaitingForFieldSelection = false;
+                validTargetFieldSlots.Clear();
+                selectedDisplayCard = null;
+                return;
+            }
+
+            Debug.Log(clickedDisplayCard.name + " が決定された！場に出す処理を開始するよ！");
+            
+            ResetCardPosition(selectedDisplayCard);
+            
+            // 1枚だけ、または空きスロットに置く処理を実行
+            ExecuteNormalPlay(selectedDisplayCard);
+
+            selectedDisplayCard = null;
+        }
+    }
+
     // 場札がクリックされたときの処理
     public void OnFieldCardClicked(GameObject clickedFieldCard)
     {
@@ -187,15 +240,20 @@ public class GameManager : MonoBehaviour
             if (selectedHandCard != null)
             {
                 ResetCardPosition(selectedHandCard);
+                deckManager.PlaceCardFromHandToField(selectedHandCard, clickedSlotIndex);
             }
 
-            deckManager.PlaceCardFromHandToField(pendingCardFromHand, clickedSlotIndex);
+            if (selectedDisplayCard != null)
+            {
+                ResetCardPosition(selectedDisplayCard);
+                deckManager.PlaceCardFromDisplayToField(selectedDisplayCard, clickedSlotIndex);
+            }
             
             // 状態をすべてリセット
             isWaitingForFieldSelection = false;
-            pendingCardFromHand = null;
             validTargetFieldSlots.Clear();
             selectedHandCard = null;
+            
 
             Debug.Log("選んだ場札とのペアリングが完了したで！");
         }
