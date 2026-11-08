@@ -1134,8 +1134,14 @@ MonoBehaviour:
   - {fileID: 861255387}
   deckPileTransform: {fileID: 2011542002}
   playerLuck: 10
-  cardSpacing: 3
+  handCardSpacing: 3
   handBaseLocalPos: {x: 0, y: 4, z: 13}
+  heldCardSpacing: 1
+  areaTransforms:
+  - {fileID: 1466351220}
+  - {fileID: 246160752}
+  - {fileID: 1219402026}
+  - {fileID: 1728564643}
   fieldSlots:
   - {fileID: 846049584}
   - {fileID: 2036425774}
@@ -1157,10 +1163,6 @@ MonoBehaviour:
   - {fileID: 442424192}
   pileSpacing: 0.1
   cpuHandTransform: {fileID: 791566666}
-  brightArea: {fileID: 1466351220}
-  animalArea: {fileID: 246160752}
-  ribbonArea: {fileID: 1219402026}
-  chaffArea: {fileID: 1728564643}
 --- !u!1 &160967866
 GameObject:
   m_ObjectHideFlags: 0
@@ -15953,6 +15955,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 609228471}
+  - {fileID: 446198137}
   - {fileID: 901122939}
   - {fileID: 459933108}
   - {fileID: 2055205269}
@@ -15967,4 +15970,3 @@ SceneRoots:
   - {fileID: 791566666}
   - {fileID: 406613680}
   - {fileID: 150391490}
-  - {fileID: 446198137}

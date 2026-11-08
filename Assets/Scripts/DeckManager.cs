@@ -9,6 +9,55 @@ public enum PlayerType
     Player2  // 相手（CPUやマルチの対戦相手）
 }
 
+[System.Serializable]
+public class PlayerCollection
+{
+    // ① 4つのリスト（光、タネ、短冊、カス）を束ねた配列の箱を用意する
+    private List<GameObject>[] lists = new List<GameObject>[]
+    {
+        new List<GameObject>(), // 0番：光札のリスト
+        new List<GameObject>(), // 1番：タネ札のリスト
+        new List<GameObject>(), // 2番：短冊札のリスト
+        new List<GameObject>()  // 3番：カス札のリスト
+    };
+
+    // ★全種類のリストが詰まった配列をそのまま丸ごと返す窓口！
+    public List<GameObject>[] GetAllLists()
+    {
+        return lists;
+    }
+
+    // ② 指定した種類（CardType）のリストをパッと取り出すための関数
+    public List<GameObject> GetList(CardType type)
+    {
+        return lists[(int)type];
+    }
+
+    // ③ 指定した種類の「現在の枚数」を返す関数（表示をズラす計算に使う！）
+    public int GetCount(CardType type)
+    {
+        return lists[(int)type].Count;
+    }
+
+    // ④ カードが回収されたときに、適切なリストへ「追加（Add）」する関数
+    public void AddCard(GameObject card, CardType type)
+    {
+        lists[(int)type].Add(card);
+    }
+
+    // ★追加：持っているカードのリストをすべて空っぽにする関数
+    public void Clear()
+    {
+        foreach (var list in lists)
+        {
+            if (list != null)
+            {
+                list.Clear();
+            }
+        }
+    }
+}
+
 public class DeckManager : MonoBehaviour
 {
     [Header("シーン内にあるすべてのカードのリスト")]
@@ -21,7 +70,7 @@ public class DeckManager : MonoBehaviour
     public int playerLuck = 10;
 
     [Header("自分の手札の並びに関する設定")]
-    [SerializeField] private float cardSpacing = 0.15f; 
+    [SerializeField] private float handCardSpacing = 3f; 
     [SerializeField] private Vector3 handBaseLocalPos = new Vector3(0f, 2f, 15f); 
 
     [Header("手札の管理（自分と相手を分離）")]
@@ -29,8 +78,24 @@ public class DeckManager : MonoBehaviour
     private List<GameObject> enemyHandCards = new List<GameObject>();   // 相手（CPU）の手札リスト
 
     [Header("持ち札の管理")]
-    private List<GameObject> myHeldCards = new List<GameObject>();     // 自分の持ち札リスト
-    private List<GameObject> enemyHeldCards = new List<GameObject>();   // 相手（CPU）の持ち札リスト
+    [SerializeField] private float heldCardSpacing = 1f; // 獲得札を横にずらす間隔
+    // UnityのInspectorで、上から順に [0:光, 1:タネ, 2:短冊, 3:カス] の順番でアサインできるようにする！
+    [SerializeField] private Transform[] areaTransforms = new Transform[4];
+    private Vector3[] areaOffsets = new Vector3[4];
+
+    private void Start()
+    {
+        // for文で一気に初期化するから、変数が何個増えてもコードの長さは変わらへん！
+        for (int i = 0; i < areaTransforms.Length; i++)
+        {
+            if (areaTransforms[i] != null)
+            {
+                areaOffsets[i] = areaTransforms[i].position;
+            }
+        }
+    }
+    private PlayerCollection playerCollection = new PlayerCollection(); // 自分の獲得札の管理
+    private PlayerCollection enemyCollection = new PlayerCollection(); // 相手（CPU）の獲得札の管理
 
     [Header("場札に関する設定")]
     [SerializeField] private Transform[] fieldSlots; 
@@ -50,19 +115,13 @@ public class DeckManager : MonoBehaviour
     [Header("CPUの手札の表示設定")]
     [SerializeField] private Transform cpuHandTransform; // CPUの手札を表示する基準の位置
 
-    [Header("プレイヤーの獲得エリア（種類ごとの置き場）")]
-    [SerializeField] private Transform brightArea; // 光札の置き場
-    [SerializeField] private Transform animalArea; // タネ札の置き場（※仮にanimalAreaなど）
-    [SerializeField] private Transform ribbonArea; // 短冊の置き場
-    [SerializeField] private Transform chaffArea;  // カスの置き場
-
 
     // 1. 山札をまとめる処理（リセット）
     public void PileUpCards()
     {
         myHandCards.Clear();
         enemyHandCards.Clear();
-        // 配列自体を消すのではなく、それぞれのスロットのリストの中身をキレイに空にする！
+        // fieldSlotCardListsのクリア処理(配列自体を消すのではなく、それぞれのスロットのリストの中身をキレイに空にする)
         foreach (var slotList in fieldSlotCardLists)
         {
             if (slotList != null)
@@ -70,6 +129,9 @@ public class DeckManager : MonoBehaviour
                 slotList.Clear();
             }
         }
+        // 持ち札のクリア処理
+        playerCollection.Clear();
+        enemyCollection.Clear();
 
         float heightOffset = 0.0f;
 
@@ -140,7 +202,7 @@ public class DeckManager : MonoBehaviour
             GameObject card = handCards[i];
             if (card == null) continue;
 
-            float xOffset = (i - (count - 1) / 2f) * cardSpacing;
+            float xOffset = (i - (count - 1) / 2f) * handCardSpacing;
 
             if (TargetPlayer == PlayerType.Player1)
             {
@@ -166,6 +228,53 @@ public class DeckManager : MonoBehaviour
                 card.transform.localRotation = Quaternion.Euler(0, 180, 0); // CPUの手札は裏向きにする
             }
 
+        }
+    }
+
+    //持ち札の横にずらして表示する
+    private void UpdateHeldLayout(PlayerType targetPlayer)
+    {
+        List<GameObject>[] heldCards;
+     
+        if (targetPlayer == PlayerType.Player1)
+        {
+            heldCards = playerCollection.GetAllLists();
+        }
+        else
+        {
+            heldCards = enemyCollection.GetAllLists();
+        }
+
+        int length = heldCards.Length;
+
+        for (int i = 0; i < length; i++)
+        {
+            Transform targetArea = areaTransforms[i];
+            if (targetArea == null) continue;
+
+            int count = heldCards[i].Count;
+            for (int j = 0; j < count; j++)
+            {
+                GameObject card = heldCards[i][j];
+                if (card == null) continue;
+
+                float xOffset = j * heldCardSpacing;
+                float zOffset = j * heldCardSpacing * -0.05f; // 少しだけ高さもずらす（好みで調整）
+
+                if (targetPlayer == PlayerType.Player1)
+                {
+                    // 自分の持ち札の場合
+                    card.transform.SetParent(targetArea); // 確実に親にしておく
+                
+                    // 親（置き場）のローカル座標を基準にして、横に少しずつずらす
+                    card.transform.localPosition = new Vector3(xOffset, 0f, zOffset);
+                    card.transform.localRotation = Quaternion.identity; // 置き場の向きに合わせる
+                }
+                else // 相手（CPU）の持ち札の場合
+                {
+                    //一旦保留
+                }
+            }
         }
     }
 
@@ -396,7 +505,7 @@ public class DeckManager : MonoBehaviour
 
         Debug.Log("カードがスライドして場にセットされた");
 
-        // ★アニメーションが終わったこの瞬間に、枚数をチェックして回収を呼ぶ！
+        // アニメーションが終わったこの瞬間に、枚数をチェックして回収を呼ぶ！
         if (fieldSlotCardLists[slotIndex].Count >= 2)
         {
             Debug.Log($"スロット {slotIndex} の札が2枚になったので回収を開始");
@@ -424,7 +533,12 @@ public class DeckManager : MonoBehaviour
             Transform targetArea = GetTargetAreaByType(data.cardType);
             Debug.Log($"カード {card.name} は {data.cardType} なので、{targetArea.name} に回収する");
 
-            // 3. 親子関係をいったん外す
+            //獲得札リストに追加　(※現状、自分のターンにのみ有効)
+            playerCollection.AddCard(card, data.cardType); 
+            //追加されたカードタイプの獲得枚数を表示するデバッグ
+            Debug.Log($"現在の {data.cardType} の獲得枚数: {playerCollection.GetCount(data.cardType)}");
+
+            // 親子関係をいったん外す
             card.transform.SetParent(null);
 
             // 4. エリアに向けて滑らかに移動させる（さっきのコルーチンを応用！）
@@ -439,11 +553,11 @@ public class DeckManager : MonoBehaviour
     {
         switch (type)
         {
-            case CardType.Bright: return brightArea;
-            case CardType.Animal: return animalArea;
-            case CardType.Ribbon: return ribbonArea;
-            case CardType.Chaff:  return chaffArea;
-            default: return chaffArea;
+            case CardType.Bright: return areaTransforms[0]; // 光札のエリア
+            case CardType.Animal: return areaTransforms[1]; // タネ札のエリア
+            case CardType.Ribbon: return areaTransforms[2]; // 短冊札のエリア
+            case CardType.Chaff:  return areaTransforms[3]; // カス札のエリア
+            default: return areaTransforms[3]; // デフォルトはカス札のエリア
         }
     }
 
@@ -472,5 +586,7 @@ public class DeckManager : MonoBehaviour
         card.transform.position = targetPos;
         card.transform.rotation = targetArea.rotation;
         card.transform.SetParent(targetArea); // 最終的に獲得エリアの子にする
+        UpdateHeldLayout(PlayerType.Player1); // 自分の獲得札の表示を更新
+        
     }
 }
