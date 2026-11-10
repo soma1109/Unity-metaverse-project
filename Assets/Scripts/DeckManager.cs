@@ -94,8 +94,12 @@ public class DeckManager : MonoBehaviour
     [Header("持ち札の管理")]
     [SerializeField] private float heldCardSpacing = 1f; // 獲得札を横にずらす間隔
     // UnityのInspectorで、上から順に [0:光, 1:タネ, 2:短冊, 3:カス] の順番でアサインできるようにする！
+    [Header("自分の獲得札エリア")]
     [SerializeField] private Transform[] areaTransforms = new Transform[4];
+    [Header("相手の獲得札エリア")]
+    [SerializeField] private Transform[] enemyAreaTransforms = new Transform[4];
     private Vector3[] areaOffsets = new Vector3[4];
+    private Vector3[] enemyAreaOffsets = new Vector3[4];
 
     private void Start()
     {
@@ -105,6 +109,13 @@ public class DeckManager : MonoBehaviour
             if (areaTransforms[i] != null)
             {
                 areaOffsets[i] = areaTransforms[i].position;
+            }
+        }
+        for (int i = 0; i < enemyAreaTransforms.Length; i++)
+        {
+            if (enemyAreaTransforms[i] != null)
+            {
+                enemyAreaOffsets[i] = enemyAreaTransforms[i].position;
             }
         }
     }
@@ -271,7 +282,7 @@ public class DeckManager : MonoBehaviour
     }
 
     // 山札から場札にカードを出す処理
-    public void PlaceCardFromDisplayToField(GameObject selectedCard, int slotIndex)
+    public void PlaceCardFromDisplayToField(GameObject selectedCard, int slotIndex, PlayerType player)
     {
         // 見せ札リストからカードを取り除く
         if (displayCards.Contains(selectedCard))
@@ -283,7 +294,7 @@ public class DeckManager : MonoBehaviour
         fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
         selectedCard.transform.SetParent(null); // 一旦親を外す
         Transform targetPosition = fieldSlots[slotIndex];
-        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromDisplay));
+        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromDisplay, player));
         selectedCard.transform.SetParent(fieldSlots[slotIndex]);
 
         fieldSlotCardLists[slotIndex].Add(selectedCard);
@@ -326,21 +337,24 @@ public class DeckManager : MonoBehaviour
     private void UpdateHeldLayout(PlayerType targetPlayer)
     {
         List<GameObject>[] heldCards;
+        Transform[] targetAreas;
      
         if (targetPlayer == PlayerType.Player1)
         {
             heldCards = playerCollection.GetAllLists();
+            targetAreas = areaTransforms;
         }
         else
         {
             heldCards = enemyCollection.GetAllLists();
+            targetAreas = enemyAreaTransforms;
         }
 
         int length = heldCards.Length;
 
         for (int i = 0; i < length; i++)
         {
-            Transform targetArea = areaTransforms[i];
+            Transform targetArea = targetAreas[i];
             if (targetArea == null) continue;
 
             int count = heldCards[i].Count;
@@ -363,7 +377,9 @@ public class DeckManager : MonoBehaviour
                 }
                 else // 相手（CPU）の持ち札の場合
                 {
-                    //一旦保留
+                    card.transform.SetParent(targetArea);
+                    card.transform.localPosition = new Vector3(xOffset, 0f, zOffset);
+                    card.transform.localRotation = Quaternion.identity;
                 }
             }
         }
@@ -534,6 +550,12 @@ public class DeckManager : MonoBehaviour
         return myHandCards;
     }
 
+    // 相手の手札リスト外部から見る用
+    public List<GameObject> GetCpuHandCards()
+    {
+        return enemyHandCards;
+    }
+
     // ② 見せ札リスト（displayCards）を外部から覗き見できるようにする
     public List<GameObject> GetDisplayCards()
     {
@@ -547,31 +569,30 @@ public class DeckManager : MonoBehaviour
     }
 
     // ④ 指定されたカードを、手札から取り除いて指定の場札スロットに配置する実務処理
-    public void PlaceCardFromHandToField(GameObject selectedCard, int slotIndex)
+    public void PlaceCardFromHandToField(GameObject selectedCard, int slotIndex, PlayerType player)
     {
         // 1. 自分の手札リストからカードを取り除く
-        if (myHandCards.Contains(selectedCard))
-        {
-            myHandCards.Remove(selectedCard);
-        }
+        if (myHandCards.Contains(selectedCard)) myHandCards.Remove(selectedCard);
+        if (enemyHandCards.Contains(selectedCard)) enemyHandCards.Remove(selectedCard);
 
         // 2. 指定された場札スロットにセットする
         fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
         selectedCard.transform.SetParent(null); // 一旦親を外す
         Transform targetPosition = fieldSlots[slotIndex];
-        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromHand));
+        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromHand, player));
         selectedCard.transform.SetParent(fieldSlots[slotIndex]);
 
         fieldSlotCardLists[slotIndex].Add(selectedCard);
 
         // 3. 残った手札の並びを綺麗に再計算して詰める
-        UpdateHandLayout(myHandCards, PlayerType.Player1);
+        if (player == PlayerType.Player1) UpdateHandLayout(myHandCards, PlayerType.Player1);
+        if (player == PlayerType.Player2) UpdateHandLayout(enemyHandCards, PlayerType.Player2);
 
         Debug.Log("手札からカードを場札のスロット " + slotIndex + " に配置しました！");
     }
 
 
-    private IEnumerator AnimateAndPlaceCard(GameObject card, Transform targetSlot, int slotIndex, CardSource source)
+    private IEnumerator AnimateAndPlaceCard(GameObject card, Transform targetSlot, int slotIndex, CardSource source, PlayerType player)
     {
         float duration = 1f; // 移動にかかる時間（秒）
         Vector3 startPos = card.transform.position;
@@ -613,14 +634,14 @@ public class DeckManager : MonoBehaviour
             fieldSlotCardLists[slotIndex].Clear();
 
             // 獲得エリアへの回収アニメーション（これもコルーチン）をここでスタート！
-            yield return StartCoroutine(CollectAndCategorizeCards(collectedCards, this));
+            yield return StartCoroutine(CollectAndCategorizeCards(collectedCards, player, this));
         }
 
         if (gameManager != null)
         {
             if (source == CardSource.FromHand)
             {
-                gameManager.OnActionFromHandFinished();
+                gameManager.OnActionFromHandFinished(player);
             }
             else if(source == CardSource.FromDisplay)
             {
@@ -631,7 +652,7 @@ public class DeckManager : MonoBehaviour
     }
 
     // 指定したスロットの札が2枚以上になったときに呼ばれる回収関数
-    public IEnumerator CollectAndCategorizeCards(List<GameObject> cardsToCollect, MonoBehaviour runner)
+    public IEnumerator CollectAndCategorizeCards(List<GameObject> cardsToCollect, PlayerType player, MonoBehaviour runner)
     {
         foreach (GameObject card in cardsToCollect)
         {
@@ -642,11 +663,12 @@ public class DeckManager : MonoBehaviour
             if (data == null) continue;
 
             // 2. 種類に応じて、どのエリアに持っていくかを決める
-            Transform targetArea = GetTargetAreaByType(data.cardType);
+            Transform targetArea = GetTargetAreaByType(data.cardType, player);
             Debug.Log($"カード {card.name} は {data.cardType} なので、{targetArea.name} に回収する");
 
-            //獲得札リストに追加　(※現状、自分のターンにのみ有効)
-            playerCollection.AddCard(card, data.cardType); 
+            //獲得札リストに追加
+            if (player == PlayerType.Player1) playerCollection.AddCard(card, data.cardType); 
+            if (player == PlayerType.Player2) enemyCollection.AddCard(card, data.cardType);
             //追加されたカードタイプの獲得枚数を表示するデバッグ
             Debug.Log($"現在の {data.cardType} の獲得枚数: {playerCollection.GetCount(data.cardType)}");
 
@@ -654,27 +676,34 @@ public class DeckManager : MonoBehaviour
             card.transform.SetParent(null);
 
             // 4. エリアに向けて滑らかに移動させる（さっきのコルーチンを応用！）
-            yield return runner.StartCoroutine(SlideCardToCollectionArea(card, targetArea));
+            yield return runner.StartCoroutine(SlideCardToCollectionArea(card, targetArea, player));
         }
 
         Debug.Log("獲得した札の分類と回収が完了した");
     }
 
     // カードの種類（CardType）から、対応する置き場を返す関数
-    private Transform GetTargetAreaByType(CardType type)
+    private Transform GetTargetAreaByType(CardType type, PlayerType player)
     {
+        Transform[] targetAreas = areaTransforms; 
+
+        if (player == PlayerType.Player2)
+        {
+            targetAreas = enemyAreaTransforms;
+        }
+
         switch (type)
         {
-            case CardType.Bright: return areaTransforms[0]; // 光札のエリア
-            case CardType.Animal: return areaTransforms[1]; // タネ札のエリア
-            case CardType.Ribbon: return areaTransforms[2]; // 短冊札のエリア
-            case CardType.Chaff:  return areaTransforms[3]; // カス札のエリア
-            default: return areaTransforms[3]; // デフォルトはカス札のエリア
+            case CardType.Bright: return targetAreas[0]; // 光札のエリア
+            case CardType.Animal: return targetAreas[1]; // タネ札のエリア
+            case CardType.Ribbon: return targetAreas[2]; // 短冊札のエリア
+            case CardType.Chaff:  return targetAreas[3]; // カス札のエリア
+            default: return targetAreas[3]; // デフォルトはカス札のエリア
         }
     }
 
     // 1枚ずつコレクションエリアへスライド移動させるコルーチン
-    private IEnumerator SlideCardToCollectionArea(GameObject card, Transform targetArea)
+    private IEnumerator SlideCardToCollectionArea(GameObject card, Transform targetArea, PlayerType player)
     {
         float duration = 0.2f;
         Vector3 startPos = card.transform.position;
@@ -698,7 +727,7 @@ public class DeckManager : MonoBehaviour
         card.transform.position = targetPos;
         card.transform.rotation = targetArea.rotation;
         card.transform.SetParent(targetArea); // 最終的に獲得エリアの子にする
-        UpdateHeldLayout(PlayerType.Player1); // 自分の獲得札の表示を更新
+        UpdateHeldLayout(player); // 自分の獲得札の表示を更新
         
     }
 }

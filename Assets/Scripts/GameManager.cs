@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(clickedCard.name + " を選択したで（1回目のクリック）");
 
             // 新しく選んだカードについて、同じ月の場札が複数あるか事前にチェックする
-            CheckCardMatching(selectedHandCard);
+            CheckCardMatching(selectedHandCard, CardSource.FromHand);
             return;
         }
 
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(clickedCard.name + " を選択したで（1回目のクリック）");
 
             // 選んだカードについて、同じ月の場札が複数あるか事前にチェックする
-            CheckCardMatching(selectedHandCard);
+            CheckCardMatching(selectedHandCard, CardSource.FromHand);
             return;
         }
 
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
             ResetCardPosition(selectedHandCard);
             
             // 1枚だけ、または空きスロットに置く処理を実行
-            ExecuteNormalPlay(selectedHandCard, CardSource.FromHand);
+            ExecuteNormalPlay(selectedHandCard, CardSource.FromHand, PlayerType.Player1);
 
             selectedHandCard = null;
         }
@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
     }
 
     // ★【新設】手札をクリックした時点で、同じ月の場札が複数あるかを事前チェックする関数
-    private void CheckCardMatching(GameObject selectedCard)
+    private void CheckCardMatching(GameObject selectedCard, CardSource source)
     {
         CardData playedCardData = selectedCard.GetComponent<CardData>();
         if (playedCardData == null) return;
@@ -109,7 +109,14 @@ public class GameManager : MonoBehaviour
         if (matchingFieldSlots.Count > 1)
         {
             isWaitingForFieldSelection = true;
-            selectedHandCard = selectedCard;
+            if (source == CardSource.FromHand)
+            {
+                selectedHandCard = selectedCard;
+            }
+            else if (source == CardSource.FromDisplay)
+            {
+                selectedDisplayCard = selectedCard;
+            }
             validTargetFieldSlots = matchingFieldSlots;
             Debug.Log("同じ月の場札が複数あるで！ 持ち上がったまま、合わせたい場札のカードをどれかクリックしてな！");
         }
@@ -121,7 +128,7 @@ public class GameManager : MonoBehaviour
     }
 
     // 通常のプレイ処理（同じ月が1枚、または0枚のとき）
-    private void ExecuteNormalPlay(GameObject selectedCard, CardSource source)
+    private void ExecuteNormalPlay(GameObject selectedCard, CardSource source, PlayerType player)
     {
         CardData playedCardData = selectedCard.GetComponent<CardData>();
         if (playedCardData == null) return;
@@ -148,11 +155,11 @@ public class GameManager : MonoBehaviour
 
             if (source == CardSource.FromHand)
             {
-                deckManager.PlaceCardFromHandToField(selectedCard, targetSlotIndex);
+                deckManager.PlaceCardFromHandToField(selectedCard, targetSlotIndex, player);
             }
             else if (source == CardSource.FromDisplay)
             {
-                deckManager.PlaceCardFromDisplayToField(selectedCard, targetSlotIndex);
+                deckManager.PlaceCardFromDisplayToField(selectedCard, targetSlotIndex, player);
             }
             Debug.Log("同じ月の場札が1枚だったので自動で合わせました！");
         }
@@ -163,11 +170,11 @@ public class GameManager : MonoBehaviour
             {
                 if (source == CardSource.FromHand)
                     {
-                        deckManager.PlaceCardFromHandToField(selectedCard, emptySlotIndex);
+                        deckManager.PlaceCardFromHandToField(selectedCard, emptySlotIndex, player);
                     }
                     else if (source == CardSource.FromDisplay)
                     {
-                        deckManager.PlaceCardFromDisplayToField(selectedCard, emptySlotIndex);
+                        deckManager.PlaceCardFromDisplayToField(selectedCard, emptySlotIndex, player);
                     }
                 Debug.Log("同じ月の場札がないため、一番若い空きスロットに置きました！");
             }
@@ -191,7 +198,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(clickedDisplayCard.name + " を選択した（1回目のクリック）");
 
             // 新しく選んだカードについて、同じ月の場札が複数あるか事前にチェックする
-            CheckCardMatching(selectedDisplayCard);
+            CheckCardMatching(selectedDisplayCard, CardSource.FromDisplay);
             return;
         }
 
@@ -203,7 +210,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(clickedDisplayCard.name + " を選択した（1回目のクリック）");
 
             // 選んだカードについて、同じ月の場札が複数あるか事前にチェックする
-            CheckCardMatching(selectedDisplayCard);
+            CheckCardMatching(selectedDisplayCard, CardSource.FromDisplay);
             return;
         }
 
@@ -226,7 +233,7 @@ public class GameManager : MonoBehaviour
             ResetCardPosition(selectedDisplayCard);
             
             // 1枚だけ、または空きスロットに置く処理を実行
-            ExecuteNormalPlay(selectedDisplayCard, CardSource.FromDisplay);
+            ExecuteNormalPlay(selectedDisplayCard, CardSource.FromDisplay, PlayerType.Player1);
 
             selectedDisplayCard = null;
         }
@@ -251,17 +258,17 @@ public class GameManager : MonoBehaviour
 
         if (validTargetFieldSlots.Contains(clickedSlotIndex))
         {
-            // 持ち上がっている手札の位置を元に戻してから場に置く
+            // 持ち上がっている札の位置を元に戻してから場に置く
             if (selectedHandCard != null)
             {
                 ResetCardPosition(selectedHandCard);
-                deckManager.PlaceCardFromHandToField(selectedHandCard, clickedSlotIndex);
+                deckManager.PlaceCardFromHandToField(selectedHandCard, clickedSlotIndex, PlayerType.Player1);
             }
 
             if (selectedDisplayCard != null)
             {
                 ResetCardPosition(selectedDisplayCard);
-                deckManager.PlaceCardFromDisplayToField(selectedDisplayCard, clickedSlotIndex);
+                deckManager.PlaceCardFromDisplayToField(selectedDisplayCard, clickedSlotIndex, PlayerType.Player1);
             }
             
             // 状態をすべてリセット
@@ -288,12 +295,44 @@ public class GameManager : MonoBehaviour
         return -1;
     }
 
-    public void OnActionFromHandFinished()
+    public void OnActionFromHandFinished(PlayerType player)
     {
         Debug.Log("プレイヤーの手札処理が完了");
 
         //山札から見せ札を出す関数を呼ぶ
         deckManager.PlaceCardFromDeckToDisplay();
+
+        if (player == PlayerType.Player2)
+        {
+            List<GameObject> displayCards = deckManager.GetDisplayCards();
+            if (displayCards != null && displayCards.Count > 0)
+            {
+                GameObject displayCard = displayCards[0];
+
+                // 3. 共通の判定器で「どこに置くべきか」を計算
+                CardMatchResult matchResult = EvaluateCardMatching(displayCard);
+                
+                int targetSlotIndex = -1;
+                if (matchResult.matchingSlots.Count > 0)
+                {
+                    // CPUの場合、同じ月が複数（2枚）あったらとりあえず最初の1枚に合わせる（あるいはランダム等）
+                    targetSlotIndex = matchResult.matchingSlots[0];
+                }
+                else
+                {
+                    targetSlotIndex = matchResult.emptySlotIndex;
+                }
+
+                if (targetSlotIndex != -1)
+                {
+                    deckManager.PlaceCardFromDisplayToField(displayCard, targetSlotIndex, player);
+                }
+            }
+            else
+            {
+                Debug.Log("見せ札なし");
+            }
+        }
     }
 
     public void OnDisplayPlayFinished()
@@ -327,4 +366,83 @@ public class GameManager : MonoBehaviour
         card.transform.position = targetPosition;
         card.transform.rotation = targetRotation;
     }
+
+    
+
+    // 【共通の判定関数】指定したカードを置くべき場所をチェックする
+    // 戻り値：判定結果のデータ（何枚マッチしたか、スロットのリスト等）
+    private CardMatchResult EvaluateCardMatching(GameObject card)
+    {
+        CardData cardData = card.GetComponent<CardData>();
+        if (cardData == null) return null;
+
+        int targetMonth = cardData.month;
+        List<GameObject>[] fieldSlotCardLists = deckManager.GetFieldSlotCardLists();
+        List<int> matchingFieldSlots = new List<int>();
+
+        // 1. 場札から同じ月のカードを探す
+        for (int i = 0; i < fieldSlotCardLists.Length; i++)
+        {
+            if (fieldSlotCardLists[i] == null || fieldSlotCardLists[i].Count == 0) continue;
+
+            GameObject fieldCard = fieldSlotCardLists[i][0];
+            CardData fieldCardData = fieldCard.GetComponent<CardData>();
+            if (fieldCardData != null && fieldCardData.month == targetMonth)
+            {
+                matchingFieldSlots.Add(i);
+            }
+        }
+
+        CardMatchResult result = new CardMatchResult();
+        result.matchingSlots = matchingFieldSlots;
+        result.emptySlotIndex = GetLowestEmptyFieldSlot(fieldSlotCardLists);
+        return result;
+    }
+
+    // 判定結果をまとめるための小さなクラス（構造体みたいなもの）
+    private class CardMatchResult
+    {
+        public List<int> matchingSlots = new List<int>(); // 同じ月があったスロットのリスト
+        public int emptySlotIndex = -1;                   // 空きスロットの番号
+    }
+
+    public void ExecuteCPUTurn()
+    {
+        Debug.Log("--- CPUのターン開始 ---");
+
+        // 1. CPUが山札から1枚引く
+        deckManager.DrawCardForPlayer(PlayerType.Player2);
+        
+        List<GameObject> cpuHand = deckManager.GetCpuHandCards(); 
+        if (cpuHand.Count == 0) return;
+
+        // 2. 手札からランダムに1枚選ぶ
+        int randomCardIndex = Random.Range(0, cpuHand.Count);
+        GameObject chosenCard = cpuHand[randomCardIndex];
+        cpuHand.RemoveAt(randomCardIndex);
+
+        // 3. 共通の判定器で「どこに置くべきか」を瞬時に計算！
+        CardMatchResult matchResult = EvaluateCardMatching(chosenCard);
+        
+        int targetSlotIndex = -1;
+        if (matchResult.matchingSlots.Count > 0)
+        {
+            // CPUの場合、同じ月が複数（2枚）あったらとりあえず最初の1枚に合わせる（あるいはランダム等）
+            targetSlotIndex = matchResult.matchingSlots[0];
+        }
+        else
+        {
+            targetSlotIndex = matchResult.emptySlotIndex;
+        }
+
+        // 4. 決まったスロットにCPUのカードを配置する処理を呼ぶ
+        if (targetSlotIndex != -1)
+        {
+            deckManager.PlaceCardFromHandToField(chosenCard, targetSlotIndex, PlayerType.Player2);
+        }
+
+        Debug.Log("CPUの手札処理終了");
+    }
 }
+
+
