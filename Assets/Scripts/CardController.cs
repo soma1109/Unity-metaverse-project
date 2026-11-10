@@ -20,6 +20,7 @@ public class CardController : MonoBehaviour
         List<GameObject> myHand = deckManager.GetMyHandCards();
         if (myHand.Contains(gameObject))
         {
+            Debug.Log("手札("+ gameObject.name +")を選択");
             // 手札のカードがクリックされた場合（1回目＝選択、2回目＝決定の判定へ）
             gameManager.OnHandCardClicked(gameObject);
             return;
@@ -30,6 +31,7 @@ public class CardController : MonoBehaviour
         if (displayCards.Contains(gameObject))
         {
             // 見せ札のカードがクリックされた場合（1回目＝選択、2回目＝決定の判定へ）
+            Debug.Log("見せ札(" + gameObject.name + ")を選択");
             gameManager.OnDisplayCardClicked(gameObject);
             return;
         }

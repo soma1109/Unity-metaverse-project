@@ -10,6 +10,12 @@ public enum PlayerType
     Player2  // 相手（CPUやマルチの対戦相手）
 }
 
+public enum CardSource
+{
+    FromHand, //手札から
+    FromDisplay //見せ札から
+}
+
 [System.Serializable]
 public class PlayerCollection
 {
@@ -277,7 +283,7 @@ public class DeckManager : MonoBehaviour
         fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
         selectedCard.transform.SetParent(null); // 一旦親を外す
         Transform targetPosition = fieldSlots[slotIndex];
-        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
+        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromDisplay));
         selectedCard.transform.SetParent(fieldSlots[slotIndex]);
 
         fieldSlotCardLists[slotIndex].Add(selectedCard);
@@ -466,7 +472,7 @@ public class DeckManager : MonoBehaviour
     {
         Debug.Log("--- CPUのターン開始 ---");
 
-        // 1. まずCPUも山札から1枚引く（すでに手札リストにある前提）
+        // 1. まずCPUも山札から1枚引く
         DrawCardForPlayer(PlayerType.Player2);
 
         // 2. CPUの手札（enemyHandCards）にカードが何枚あるかチェック
@@ -553,7 +559,7 @@ public class DeckManager : MonoBehaviour
         fieldSlots[slotIndex] = fieldSlots[slotIndex]; // 念のため
         selectedCard.transform.SetParent(null); // 一旦親を外す
         Transform targetPosition = fieldSlots[slotIndex];
-        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex));
+        StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromHand));
         selectedCard.transform.SetParent(fieldSlots[slotIndex]);
 
         fieldSlotCardLists[slotIndex].Add(selectedCard);
@@ -565,7 +571,7 @@ public class DeckManager : MonoBehaviour
     }
 
 
-    private IEnumerator AnimateAndPlaceCard(GameObject card, Transform targetSlot, int slotIndex)
+    private IEnumerator AnimateAndPlaceCard(GameObject card, Transform targetSlot, int slotIndex, CardSource source)
     {
         float duration = 1f; // 移動にかかる時間（秒）
         Vector3 startPos = card.transform.position;
@@ -607,7 +613,20 @@ public class DeckManager : MonoBehaviour
             fieldSlotCardLists[slotIndex].Clear();
 
             // 獲得エリアへの回収アニメーション（これもコルーチン）をここでスタート！
-            StartCoroutine(CollectAndCategorizeCards(collectedCards, this));
+            yield return StartCoroutine(CollectAndCategorizeCards(collectedCards, this));
+        }
+
+        if (gameManager != null)
+        {
+            if (source == CardSource.FromHand)
+            {
+                gameManager.OnActionFromHandFinished();
+            }
+            else if(source == CardSource.FromDisplay)
+            {
+                gameManager.OnDisplayPlayFinished();
+            }
+
         }
     }
 
