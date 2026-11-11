@@ -15,11 +15,19 @@ public class GameManager : MonoBehaviour
     private List<int> validTargetFieldSlots = new List<int>();
 
     // 親が決まったかどうか、どちらが親になったかを保持する変数など
+    public bool isDecidingDealer;
     public bool isPlayerParentFirst; // trueならプレイヤーが親
 
     // ★ボタンから直接押されたときに呼ばれる「窓口用の普通のメソッド」
     public void OnClickDecideDealerButton()
     {
+        // ★もしすでに処理中だったら、連打されても無視する！
+        if (isDecidingDealer)
+        {
+            Debug.Log("現在、親決め処理中です。終わるまでお待ちください！");
+            return;
+        }
+        
         deckManager.PileUpCards();
         // ここでコルーチンを起動する！
         StartCoroutine(DecideInitialDealer());
@@ -30,6 +38,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public IEnumerator DecideInitialDealer()
     {
+        isDecidingDealer = true;
+
         bool isDecided = false;
         // 何回特別枠に引いたかを記憶
         int SpecialCardsCount = 0;
@@ -86,6 +96,9 @@ public class GameManager : MonoBehaviour
 
         // 3. 親が決まったら、引いたカードを山札に一旦すべて戻してシャッフルする処理へ繋げる
         deckManager.PileUpCards();
+
+        isDecidingDealer = false;
+        Debug.Log("親決めと山札のリセットが完了");
     }
 
     // プレイヤーが手札のカードをクリックしたときの処理

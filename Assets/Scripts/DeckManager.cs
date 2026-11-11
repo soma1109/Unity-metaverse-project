@@ -86,7 +86,7 @@ public class DeckManager : MonoBehaviour
     [SerializeField] private Transform enemySpecialSlotTransform;
     private List<GameObject> enemySpecialCards = new List<GameObject>();
     private float speedToSpecialSlot = 1.5f;
-    private float specialCardSpacing = 3f;
+    private float specialCardSpacing = 2f;
 
     [Header("プレイヤーのラック（運）のステータス")]
     public int playerLuck = 10;
@@ -478,7 +478,7 @@ public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
         if (player == PlayerType.Player1)
         {
             int mySpecialCardCount = mySpecialCards.Count;
-            targetPosition = mySpecialSlotTransform.position + new Vector3(-1 * specialCardSpacing * mySpecialCardCount, 0, 0);
+            targetPosition = mySpecialSlotTransform.position + new Vector3(-1 * specialCardSpacing * mySpecialCardCount, 0, -0.5f*mySpecialCardCount);
             targetRot = mySpecialSlotTransform.rotation;
             targetParent = mySpecialSlotTransform; // 親を決定
             mySpecialCards.Add(selectedCard);
@@ -486,7 +486,7 @@ public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
         else
         {
             int enemySpecialCardCount = enemySpecialCards.Count;
-            targetPosition = enemySpecialSlotTransform.position + new Vector3(specialCardSpacing * enemySpecialCardCount, 0, 0);
+            targetPosition = enemySpecialSlotTransform.position + new Vector3(specialCardSpacing * enemySpecialCardCount, 0, -0.5f*enemySpecialCardCount);
             targetRot = enemySpecialSlotTransform.rotation;
             targetParent = enemySpecialSlotTransform; // 親を決定
             enemySpecialCards.Add(selectedCard);
