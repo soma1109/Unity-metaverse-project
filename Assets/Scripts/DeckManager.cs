@@ -568,6 +568,15 @@ public class DeckManager : MonoBehaviour
         return fieldSlots.Length;
     }
 
+    public PlayerCollection GetPlayerCollection()
+    {
+        return playerCollection;
+    }
+    public PlayerCollection GetEnemyCollection()
+    {
+        return enemyCollection;
+    }
+
     // ④ 指定されたカードを、手札から取り除いて指定の場札スロットに配置する実務処理
     public void PlaceCardFromHandToField(GameObject selectedCard, int slotIndex, PlayerType player)
     {

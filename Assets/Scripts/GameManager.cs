@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("DeckManagerの参照")]
     [SerializeField] private DeckManager deckManager;
+    [SerializeField] private YakuManager yakuManager;
 
     // --- 選択状態を管理する変数 ---
     private GameObject selectedHandCard = null;        // 現在選択（持ち上げ）されている手札のカード
@@ -411,7 +412,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("--- CPUのターン開始 ---");
 
         // 1. CPUが山札から1枚引く
-        deckManager.DrawCardForPlayer(PlayerType.Player2);
+        //deckManager.DrawCardForPlayer(PlayerType.Player2);
         
         List<GameObject> cpuHand = deckManager.GetCpuHandCards(); 
         if (cpuHand.Count == 0) return;
@@ -442,6 +443,25 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("CPUの手札処理終了");
+    }
+
+    public void CalculatePoint()
+    {
+        if (yakuManager == null)
+        {
+            Debug.LogError("YakuManagerがアサインされていない");
+            return;
+        }
+
+        PlayerCollection playerCollection = deckManager.GetPlayerCollection();
+        PlayerCollection enemyCollection = deckManager.GetEnemyCollection();
+
+        YakuResult myresult = yakuManager.EvaluateYaku(playerCollection);
+        YakuResult enemyresult = yakuManager.EvaluateYaku(enemyCollection);
+
+        // string.Join(", ", myresult.yakuNames) で、リストの名前を「, (カンマ)」で繋いだ1つの文章にしてくれる！
+        Debug.Log($"自分の点数: {myresult.totalScore}点 [{string.Join(", ", myresult.yakuNames)}]");
+        Debug.Log($"相手の点数: {enemyresult.totalScore}点 [{string.Join(", ", enemyresult.yakuNames)}]");
     }
 }
 
