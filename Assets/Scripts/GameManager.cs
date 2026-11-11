@@ -14,6 +14,80 @@ public class GameManager : MonoBehaviour
     private bool isWaitingForFieldSelection = false;   // 同じ月が複数あって場札を選ぶのを待っている状態か    
     private List<int> validTargetFieldSlots = new List<int>();
 
+    // 親が決まったかどうか、どちらが親になったかを保持する変数など
+    public bool isPlayerParentFirst; // trueならプレイヤーが親
+
+    // ★ボタンから直接押されたときに呼ばれる「窓口用の普通のメソッド」
+    public void OnClickDecideDealerButton()
+    {
+        deckManager.PileUpCards();
+        // ここでコルーチンを起動する！
+        StartCoroutine(DecideInitialDealer());
+    }
+
+    /// <summary>
+    /// 最初の親を決めるコルーチン（決まるまで引き直すループ処理）
+    /// </summary>
+    public IEnumerator DecideInitialDealer()
+    {
+        bool isDecided = false;
+        // 何回特別枠に引いたかを記憶
+        int SpecialCardsCount = 0;
+
+        while (!isDecided)
+        {
+            Debug.Log("親決めのために、お互い札を1枚引きます…！");
+
+            // 1. プレイヤーと敵がそれぞれ山札から1枚引く（CardDataを持っていると仮定）
+            deckManager.PlaceCardFromDeckToSpecialSlot(PlayerType.Player1);
+            List<GameObject> playerSpecialCards = deckManager.GetMySpecialCards();
+            GameObject playerSpecialCard = playerSpecialCards[SpecialCardsCount];
+            deckManager.PlaceCardFromDeckToSpecialSlot(PlayerType.Player2);
+            List<GameObject> enemySpecialCards = deckManager.GetEnemySpecialCards();
+            GameObject enemySpecialCard = enemySpecialCards[SpecialCardsCount];
+
+            if (playerSpecialCard == null || enemySpecialCard == null)
+            {
+                Debug.LogError("山札にカードが足りません！");
+                yield break;
+            }
+
+            CardData playerData = playerSpecialCard.GetComponent<CardData>();
+            CardData enemyData = enemySpecialCard.GetComponent<CardData>();
+
+            Debug.Log($"プレイヤーが引いた札: {playerData.month}月 / 敵が引いた札: {enemyData.month}月");
+
+            // 2. 月の大小を比較する（※花札の基本は「月が小さい方」が親）
+            if (playerData.month < enemyData.month)
+            {
+                isPlayerParentFirst = true;
+                isDecided = true;
+                Debug.Log($"【親決定】プレイヤーの月（{playerData.month}月）の方が小さいため、プレイヤーが親です！");
+            }
+            else if (enemyData.month < playerData.month)
+            {
+                isPlayerParentFirst = false;
+                isDecided = true;
+                Debug.Log($"【親決定】敵の月（{enemyData.month}月）の方が小さいため、敵が親です！");
+            }
+            else
+            {
+                Debug.Log($"お互い {playerData.month}月 で同点です！もう一度引き直します！");
+                // 同点の場合はループが継続してもう一度引き直す
+            }
+
+            // 演出として少しウェイト（待機）を入れるとプレイヤーに見やすくて親切
+            yield return new WaitForSeconds(3f);
+
+            SpecialCardsCount += 1;
+
+            // TODO: 引いたカードを山札に戻す、または場札にするなどの片付け処理をここに挟む
+        }
+
+        // 3. 親が決まったら、引いたカードを山札に一旦すべて戻してシャッフルする処理へ繋げる
+        deckManager.PileUpCards();
+    }
+
     // プレイヤーが手札のカードをクリックしたときの処理
     public void OnHandCardClicked(GameObject clickedCard)
     {

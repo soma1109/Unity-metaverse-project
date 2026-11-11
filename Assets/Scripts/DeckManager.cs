@@ -80,6 +80,14 @@ public class DeckManager : MonoBehaviour
     [SerializeField] private Transform displayPositionTransform;
     private List<GameObject> displayCards = new List<GameObject>();
 
+    [Header("特別なカードスロット")]
+    [SerializeField] private Transform mySpecialSlotTransform;
+    private List<GameObject> mySpecialCards = new List<GameObject>();
+    [SerializeField] private Transform enemySpecialSlotTransform;
+    private List<GameObject> enemySpecialCards = new List<GameObject>();
+    private float speedToSpecialSlot = 1.5f;
+    private float specialCardSpacing = 3f;
+
     [Header("プレイヤーのラック（運）のステータス")]
     public int playerLuck = 10;
 
@@ -158,6 +166,8 @@ public class DeckManager : MonoBehaviour
         // 持ち札のクリア処理
         playerCollection.Clear();
         enemyCollection.Clear();
+        mySpecialCards.Clear();
+        enemySpecialCards.Clear();
 
         float heightOffset = 0.0f;
 
@@ -403,11 +413,13 @@ public class DeckManager : MonoBehaviour
             bool isInEnemyHand = enemyHandCards.Contains(card);
             bool inInDisplay = displayCards.Contains(card);
             bool isInHeld = playerCollection.GetAllLists().Any(list => list.Contains(card)) || enemyCollection.GetAllLists().Any(list => list.Contains(card));
+            bool isInMySpecialSlot = mySpecialCards.Contains(card);
+            bool isInEnemySpecialSlot = enemySpecialCards.Contains(card);
             // 例：指定したカードが、どのフィールドスロットのリストのいずれかに含まれているか探す
             bool isInAnySlot = System.Array.Exists(fieldSlotCardLists, slotList => slotList != null && slotList.Contains(card));
 
             // どこにも含まれていなければ、山札の残りとする
-            if (!isInMyHand && !isInEnemyHand && !isInAnySlot && !inInDisplay && !isInHeld)
+            if (!isInMyHand && !isInEnemyHand && !isInAnySlot && !inInDisplay && !isInHeld && !isInMySpecialSlot && !isInEnemySpecialSlot)
             {
                 list.Add(card);
             }
@@ -447,6 +459,54 @@ public class DeckManager : MonoBehaviour
         fieldSlotCardLists[slotIndex].Add(selectedCard);
 
         Debug.Log("場札のスロット " + slotIndex + " にカードを配置");
+    }
+
+public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
+    {
+        List<GameObject> availableCards = GetAvailableCards();
+        if (availableCards.Count == 0)
+        {
+            Debug.Log("山札なし");
+            return;
+        }
+
+        GameObject selectedCard = DecideCardByLuck(availableCards);
+        Vector3 targetPosition;
+        Quaternion targetRot;
+        Transform targetParent; // どの親にするか保持する変数
+        
+        if (player == PlayerType.Player1)
+        {
+            int mySpecialCardCount = mySpecialCards.Count;
+            targetPosition = mySpecialSlotTransform.position + new Vector3(-1 * specialCardSpacing * mySpecialCardCount, 0, 0);
+            targetRot = mySpecialSlotTransform.rotation;
+            targetParent = mySpecialSlotTransform; // 親を決定
+            mySpecialCards.Add(selectedCard);
+        }
+        else
+        {
+            int enemySpecialCardCount = enemySpecialCards.Count;
+            targetPosition = enemySpecialSlotTransform.position + new Vector3(specialCardSpacing * enemySpecialCardCount, 0, 0);
+            targetRot = enemySpecialSlotTransform.rotation;
+            targetParent = enemySpecialSlotTransform; // 親を決定
+            enemySpecialCards.Add(selectedCard);
+        }
+
+        // 移動アニメーションを始めて、終わった瞬間に確実に親をセットする！
+        StartCoroutine(MoveAndSetParent(selectedCard, targetPosition, targetRot, targetParent, speedToSpecialSlot));
+    }
+
+    // ★移動したあとに確実に親をセットする専用コルーチン
+    private IEnumerator MoveAndSetParent(GameObject card, Vector3 targetPosition, Quaternion targetRotation, Transform parentTransform, float duration)
+    {
+        yield return StartCoroutine(MoveCardToPosition(card, targetPosition, targetRotation, duration));
+
+        // 移動が完全に終わってから、親をセットして位置・回転を同期する！
+        card.transform.SetParent(parentTransform);
+        card.transform.position = targetPosition;
+        card.transform.rotation = targetRotation;
+
+        Debug.Log($"カード {card.name} をスロットの親 ({parentTransform.name}) に設定し、座標を確定しました。");
     }
 
     // 4. ゲームスタートボタンが押されたときの処理
@@ -575,6 +635,14 @@ public class DeckManager : MonoBehaviour
     public PlayerCollection GetEnemyCollection()
     {
         return enemyCollection;
+    }
+    public List<GameObject> GetMySpecialCards()
+    {
+        return mySpecialCards;
+    }
+    public List<GameObject> GetEnemySpecialCards()
+    {
+        return enemySpecialCards;
     }
 
     // ④ 指定されたカードを、手札から取り除いて指定の場札スロットに配置する実務処理
