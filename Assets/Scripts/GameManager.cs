@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,47 @@ public class GameManager : MonoBehaviour
     // 親が決まったかどうか、どちらが親になったかを保持する変数など
     public bool isDecidingDealer;
     public bool isPlayerParentFirst; // trueならプレイヤーが親
+
+    // ゲームの進行状況に関するフラグ
+    private bool isGameStarting  = false; //ゲームが進行中か
+    private bool isMyTurn = false; //自分のターンか相手のターンか
+    private bool isProcessing = false; //何らかの処理中か
+    private bool canDecideHandCard = false; //自分のターンで出す手札を選んだかどうか
+
+    public void GameStart()
+    {
+        StartCoroutine(GameStartRoutine());
+    }
+    private IEnumerator GameStartRoutine()
+    {
+        isGameStarting = true;
+        isProcessing = true;
+        Debug.Log("=== ゲームスタート処理開始 ===");
+
+        deckManager.PileUpCards();
+        yield return StartCoroutine(DecideInitialDealer());
+
+        deckManager.OnGameStartButtonClicked();
+
+        yield return new WaitForSeconds(1.0f);
+
+        isProcessing = false; //処理中のフラグを解除
+
+        //親がどちらかによって最初のターンを決める
+        if (isPlayerParentFirst)
+        {
+            Debug.Log(" プレイヤーが親です");
+            isMyTurn = true;
+            canDecideHandCard = true;
+        }
+        else
+        {
+            Debug.Log(" 相手プレイヤー(CPU)が親です");
+            isMyTurn = false;
+            ExecuteCPUTurn();
+        }
+
+    }
 
     // ★ボタンから直接押されたときに呼ばれる「窓口用の普通のメソッド」
     public void OnClickDecideDealerButton()
@@ -104,6 +146,16 @@ public class GameManager : MonoBehaviour
     // プレイヤーが手札のカードをクリックしたときの処理
     public void OnHandCardClicked(GameObject clickedCard)
     {
+        if (!isMyTurn || isProcessing)
+        {
+            Debug.Log("今は自分のターンではない");
+            return;
+        }
+        if (!canDecideHandCard)
+        {
+            Debug.Log("手札から場札への処理は終了している");
+            return;
+        }
 
         // --- パターン1：すでに別のカードが選択されていて、それとは「違うカード」をクリックした場合 ---
         if (selectedHandCard != null && selectedHandCard != clickedCard)
@@ -146,6 +198,8 @@ public class GameManager : MonoBehaviour
             }
 
             Debug.Log(clickedCard.name + " が決定されたで！場に出す処理を開始するよ！");
+
+            canDecideHandCard = false; //場に出す札が決定された瞬間に手札を出せないようにする
             
             ResetCardPosition(selectedHandCard);
             
@@ -346,6 +400,7 @@ public class GameManager : MonoBehaviour
 
         if (validTargetFieldSlots.Contains(clickedSlotIndex))
         {
+            canDecideHandCard = false; //場札に出す札を選択されたらフラグ解除 (※ただしこれは見せ札を出すときも呼ばれてることに注意)
             // 持ち上がっている札の位置を元に戻してから場に置く
             if (selectedHandCard != null)
             {
@@ -423,9 +478,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnDisplayPlayFinished()
+    public void OnDisplayPlayFinished(PlayerType player)
     {
         Debug.Log("見せ札からのプレイ完了");
+        turnSwitching(player);
     }
 
     // 指定した位置（またはオブジェクト）へ、時間をかけて滑らかに移動させるコルーチン
@@ -530,6 +586,24 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("CPUの手札処理終了");
+
+        turnSwitching(PlayerType.Player2);
+    }
+
+    public void turnSwitching(PlayerType player)
+    {
+        if (player == PlayerType.Player1)
+        {
+            //自分のターンが終わった場合
+            isMyTurn = false;
+            ExecuteCPUTurn();
+        }
+        else
+        {
+            //相手のターンが終わった場合
+            isMyTurn = true;
+            canDecideHandCard = true;
+        }
     }
 
     public void CalculatePoint()

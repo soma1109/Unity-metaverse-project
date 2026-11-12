@@ -722,7 +722,7 @@ public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
             }
             else if(source == CardSource.FromDisplay)
             {
-                gameManager.OnDisplayPlayFinished();
+                gameManager.OnDisplayPlayFinished(player);
             }
 
         }

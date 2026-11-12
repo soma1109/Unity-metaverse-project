@@ -3652,6 +3652,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   deckManager: {fileID: 150391491}
   yakuManager: {fileID: 909922066}
+  isDecidingDealer: 0
   isPlayerParentFirst: 0
 --- !u!1 &407252740
 GameObject:
@@ -17766,9 +17767,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 150391491}
+      - m_Target: {fileID: 406613679}
         m_TargetAssemblyTypeName: DeckManager, Assembly-CSharp
-        m_MethodName: OnGameStartButtonClicked
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
