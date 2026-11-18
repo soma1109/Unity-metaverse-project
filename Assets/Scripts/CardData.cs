@@ -6,6 +6,9 @@ public class CardData : MonoBehaviour
     public int month;        // 何月か (1〜12)
     public CardType cardType; // 札の種類 (光、タネ、短冊、カス)
 
+    [Header("UI用スプライト")]
+    public Sprite cardSprite;
+
     // 点数は「種類」や「特定の月」によって自動で決まるプロパティにする
     public int CardPoint
     {

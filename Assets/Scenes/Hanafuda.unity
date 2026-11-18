@@ -419,6 +419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
   cardType: 3
+  cardSprite: {fileID: 3585117399424790108, guid: 072d500ec24c5a0488e49ea920a235bc, type: 3}
 --- !u!1 &63349893
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,6 +915,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
   cardType: 3
+  cardSprite: {fileID: 1888038483854324667, guid: 959674d4ecd852b4983793aa0e08e9ea, type: 3}
 --- !u!1 &114005860
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +1072,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
   cardType: 3
+  cardSprite: {fileID: -7228684066856393350, guid: d2e203150f433ae4391cbeac938495e1, type: 3}
 --- !u!1 &150391489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1359,6 +1362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
   cardType: 3
+  cardSprite: {fileID: 1888038483854324667, guid: 959674d4ecd852b4983793aa0e08e9ea, type: 3}
 --- !u!1 &164353356
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,6 +1663,144 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
   cardType: 3
+  cardSprite: {fileID: 3061568648857169580, guid: de288e054c8e63047bd3b31e3d52ad1f, type: 3}
+--- !u!1 &198729833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 198729834}
+  - component: {fileID: 198729836}
+  - component: {fileID: 198729835}
+  m_Layer: 0
+  m_Name: TurnText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &198729834
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198729833}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.802, y: 0.802, z: 0.802}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2021056703}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -355.3, y: 199.5}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &198729835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198729833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Turn Text
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656bu
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &198729836
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198729833}
+  m_CullTransparentMesh: 1
 --- !u!1 &221787489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1983,6 +2125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
   cardType: 2
+  cardSprite: {fileID: 1883011217358287956, guid: 4b01d0bb5f8c79c488ac347aa160277a, type: 3}
 --- !u!1 &246160751
 GameObject:
   m_ObjectHideFlags: 0
@@ -2748,6 +2891,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
   cardType: 2
+  cardSprite: {fileID: 7892490750023263336, guid: fbe9e8114286c2543b3af51e37062e24, type: 3}
 --- !u!1 &310422202
 GameObject:
   m_ObjectHideFlags: 0
@@ -3294,6 +3438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
   cardType: 3
+  cardSprite: {fileID: -3886073351322179272, guid: 13947fa603fc6924881ed915c50bdf2e, type: 3}
 --- !u!1 &377961373
 GameObject:
   m_ObjectHideFlags: 0
@@ -3450,6 +3595,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
   cardType: 2
+  cardSprite: {fileID: -2953669228137252741, guid: 78ad024e911496244b5f0686b382b408, type: 3}
 --- !u!1 &389150397
 GameObject:
   m_ObjectHideFlags: 0
@@ -3606,6 +3752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 2
   cardType: 1
+  cardSprite: {fileID: 4092989623564635689, guid: 5783a98b04b664444933647fe5f3d9a9, type: 3}
 --- !u!1 &406613679
 GameObject:
   m_ObjectHideFlags: 0
@@ -3652,6 +3799,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   deckManager: {fileID: 150391491}
   yakuManager: {fileID: 909922066}
+  uiManager: {fileID: 1470799736}
+  handUIManager: {fileID: 2131022468}
   isDecidingDealer: 0
   isPlayerParentFirst: 0
 --- !u!1 &407252740
@@ -3810,6 +3959,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
   cardType: 0
+  cardSprite: {fileID: 4586008900084301293, guid: dd061853258f5454eb9bdd1d92742627, type: 3}
 --- !u!1 &412230626
 GameObject:
   m_ObjectHideFlags: 0
@@ -4434,6 +4584,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
   cardType: 1
+  cardSprite: {fileID: -2479372656140953753, guid: d6fd3142358722940bf24a42df786a7b, type: 3}
 --- !u!1 &468123770
 GameObject:
   m_ObjectHideFlags: 0
@@ -4840,6 +4991,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
   cardType: 2
+  cardSprite: {fileID: -7400547307260742813, guid: a1a5c8251f0cf5741b428d0418897813, type: 3}
 --- !u!1 &514626886
 GameObject:
   m_ObjectHideFlags: 0
@@ -5179,6 +5331,143 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521387713}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &525190096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 525190097}
+  - component: {fileID: 525190099}
+  - component: {fileID: 525190098}
+  m_Layer: 0
+  m_Name: ScoreText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &525190097
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525190096}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.802, y: 0.802, z: 0.802}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2021056703}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -274.12, y: -150.148}
+  m_SizeDelta: {x: 401.35, y: 179.2916}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &525190098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525190096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Score Text
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 9ce56ca3deae19049a9691cf3cc555ca, type: 2}
+  m_sharedMaterial: {fileID: 396806088505411656, guid: 9ce56ca3deae19049a9691cf3cc555ca, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 30
+  m_fontSizeBase: 30
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 1024
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656bu
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: -0.61940026, w: 0.91013145}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &525190099
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525190096}
+  m_CullTransparentMesh: 1
 --- !u!1 &529271356
 GameObject:
   m_ObjectHideFlags: 0
@@ -5335,6 +5624,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
   cardType: 1
+  cardSprite: {fileID: -7571400427597012409, guid: ae908327a5bc73449b11f447b331d5fc, type: 3}
 --- !u!1 &534742014
 GameObject:
   m_ObjectHideFlags: 0
@@ -5491,6 +5781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
   cardType: 1
+  cardSprite: {fileID: -361566171880726087, guid: bfef47475a7653648bf9b4b803744c37, type: 3}
 --- !u!1 &541628058
 GameObject:
   m_ObjectHideFlags: 0
@@ -5527,7 +5818,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -37.8}
+  m_AnchoredPosition: {x: -0, y: -33.1}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &541628060
@@ -6027,6 +6318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
   cardType: 3
+  cardSprite: {fileID: -8214591358236617059, guid: 217ece64cddd87d41a4666646c81ac39, type: 3}
 --- !u!1 &609228467
 GameObject:
   m_ObjectHideFlags: 0
@@ -6679,6 +6971,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
   cardType: 3
+  cardSprite: {fileID: -7228684066856393350, guid: d2e203150f433ae4391cbeac938495e1, type: 3}
 --- !u!1 &651969934
 GameObject:
   m_ObjectHideFlags: 0
@@ -6835,6 +7128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
   cardType: 3
+  cardSprite: {fileID: -3886073351322179272, guid: 13947fa603fc6924881ed915c50bdf2e, type: 3}
 --- !u!1 &653130854
 GameObject:
   m_ObjectHideFlags: 0
@@ -7022,6 +7316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
   cardType: 2
+  cardSprite: {fileID: -8658270424524351249, guid: 909d4c869423b1f418f67869ad43f7b5, type: 3}
 --- !u!1 &676953052
 GameObject:
   m_ObjectHideFlags: 0
@@ -7178,6 +7473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
   cardType: 1
+  cardSprite: {fileID: -339408138551477083, guid: 1c56fb6497916f345b0a7b7a38a8aee1, type: 3}
 --- !u!1 &715506915
 GameObject:
   m_ObjectHideFlags: 0
@@ -7334,6 +7630,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
   cardType: 3
+  cardSprite: {fileID: 5838450846170131527, guid: 1b646be310a16a54bb2d394f5f7f2cd0, type: 3}
 --- !u!1 &741532409
 GameObject:
   m_ObjectHideFlags: 0
@@ -7521,6 +7818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
   cardType: 3
+  cardSprite: {fileID: 5838450846170131527, guid: 1b646be310a16a54bb2d394f5f7f2cd0, type: 3}
 --- !u!1 &750200131
 GameObject:
   m_ObjectHideFlags: 0
@@ -8358,6 +8656,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
   cardType: 1
+  cardSprite: {fileID: -3582725861023638623, guid: 4a4877cae4c73dd4b88438b5795a5453, type: 3}
 --- !u!1 &829581099
 GameObject:
   m_ObjectHideFlags: 0
@@ -8815,6 +9114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
   cardType: 2
+  cardSprite: {fileID: 715346522017482433, guid: 89b72a4f6b3f29c46a48f5e4a3f772eb, type: 3}
 --- !u!1 &861255387
 GameObject:
   m_ObjectHideFlags: 0
@@ -8971,6 +9271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
   cardType: 3
+  cardSprite: {fileID: 7503307104270683879, guid: 84f5baddd6bde924fa29c5814b9b0f16, type: 3}
 --- !u!1 &868032277
 GameObject:
   m_ObjectHideFlags: 0
@@ -9548,6 +9849,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
   cardType: 3
+  cardSprite: {fileID: -8214591358236617059, guid: 217ece64cddd87d41a4666646c81ac39, type: 3}
 --- !u!1 &901122938
 GameObject:
   m_ObjectHideFlags: 0
@@ -10020,6 +10322,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
   cardType: 0
+  cardSprite: {fileID: 6384813904853549865, guid: e927c709416c81145ac3a60dfc4a2256, type: 3}
 --- !u!1 &951912912
 GameObject:
   m_ObjectHideFlags: 0
@@ -10176,6 +10479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
   cardType: 1
+  cardSprite: {fileID: 1813974918922820309, guid: 30bb2ceb1691f61458f3b51fa491db03, type: 3}
 --- !u!1 &970480204
 GameObject:
   m_ObjectHideFlags: 0
@@ -10217,7 +10521,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.37}
-  m_AnchoredPosition: {x: -4.9651, y: 281.0747}
+  m_AnchoredPosition: {x: 1, y: -13.6}
   m_SizeDelta: {x: 101.4555, y: 339.3625}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &970480206
@@ -10414,6 +10718,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
   cardType: 0
+  cardSprite: {fileID: 6054612918270355545, guid: fc92c28318e66224bbf33b33cf527284, type: 3}
 --- !u!1 &983485996
 GameObject:
   m_ObjectHideFlags: 0
@@ -10570,6 +10875,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
   cardType: 3
+  cardSprite: {fileID: 3585117399424790108, guid: 072d500ec24c5a0488e49ea920a235bc, type: 3}
 --- !u!1 &994127651
 GameObject:
   m_ObjectHideFlags: 0
@@ -10890,6 +11196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
   cardType: 2
+  cardSprite: {fileID: 8214498296194796517, guid: 7b088647722fffc4b823a6f771a4cab3, type: 3}
 --- !u!1 &1033525361
 GameObject:
   m_ObjectHideFlags: 0
@@ -11196,7 +11503,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u25B2"
+  m_text: "\u25BC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11545,6 +11852,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
   cardType: 1
+  cardSprite: {fileID: -642133500213393651, guid: 5de6ef4c6d76f2c409b74da2e474fe27, type: 3}
 --- !u!1 &1099374727
 GameObject:
   m_ObjectHideFlags: 0
@@ -11948,6 +12256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 12
   cardType: 3
+  cardSprite: {fileID: 7503307104270683879, guid: 84f5baddd6bde924fa29c5814b9b0f16, type: 3}
 --- !u!1 &1137377774
 GameObject:
   m_ObjectHideFlags: 0
@@ -12663,6 +12972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
   cardType: 3
+  cardSprite: {fileID: 3061568648857169580, guid: de288e054c8e63047bd3b31e3d52ad1f, type: 3}
 --- !u!1 &1244976202
 GameObject:
   m_ObjectHideFlags: 0
@@ -13285,6 +13595,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
   cardType: 2
+  cardSprite: {fileID: 1815616529786436803, guid: 3c5ea76e806e9154c8f471626cb4d547, type: 3}
 --- !u!1 &1341387541
 GameObject:
   m_ObjectHideFlags: 0
@@ -13441,6 +13752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 11
   cardType: 3
+  cardSprite: {fileID: 200834251803893177, guid: 4f893800413656f478e45c5841e6a041, type: 3}
 --- !u!1 &1345035743
 GameObject:
   m_ObjectHideFlags: 0
@@ -13597,6 +13909,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 6
   cardType: 2
+  cardSprite: {fileID: -1926590401055433026, guid: b31ae96794a188a419b337d29d81dc35, type: 3}
 --- !u!1 &1350528457
 GameObject:
   m_ObjectHideFlags: 0
@@ -13776,7 +14089,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 339, y: -262}
+  m_AnchoredPosition: {x: 328, y: 127}
   m_SizeDelta: {x: 171.4231, y: 176.8627}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1410792265
@@ -14061,6 +14374,124 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
   cardType: 3
+  cardSprite: {fileID: -3500329787540529759, guid: 2ceec15311be8b34abef26061cc7886e, type: 3}
+--- !u!1 &1427304892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1427304893}
+  - component: {fileID: 1427304897}
+  - component: {fileID: 1427304896}
+  - component: {fileID: 1427304895}
+  - component: {fileID: 1427304894}
+  m_Layer: 0
+  m_Name: HandArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1427304893
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427304892}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2021056703}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 161.72235, y: -161.59113}
+  m_SizeDelta: {x: -348.3353, y: -344.8393}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1427304894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427304892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
+  m_HorizontalFit: 0
+  m_VerticalFit: 0
+--- !u!114 &1427304895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427304892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &1427304896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427304892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1427304897
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427304892}
+  m_CullTransparentMesh: 1
 --- !u!1 &1429066819
 GameObject:
   m_ObjectHideFlags: 0
@@ -14217,6 +14648,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 5
   cardType: 1
+  cardSprite: {fileID: -1322882891490436426, guid: baa09444153d1e347954971df6bab0d1, type: 3}
 --- !u!1 &1440424838
 GameObject:
   m_ObjectHideFlags: 0
@@ -14373,6 +14805,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 8
   cardType: 0
+  cardSprite: {fileID: -282418331898732478, guid: 51f7d6f205fdac441a854387206bd6c4, type: 3}
 --- !u!1 &1442704962
 GameObject:
   m_ObjectHideFlags: 0
@@ -14650,6 +15083,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 446198137}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1 &1470799734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1470799735}
+  - component: {fileID: 1470799736}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1470799735
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470799734}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 85.29999, y: 78.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1470799736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470799734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be7447e98a99b34b882e9b13d558c0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  turnText: {fileID: 198729835}
+  scoreText: {fileID: 525190098}
 --- !u!1 &1470872195
 GameObject:
   m_ObjectHideFlags: 0
@@ -15114,6 +15593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 3
   cardType: 0
+  cardSprite: {fileID: 4552135490465453362, guid: a267494c4b1ae574ba7f881152b80c12, type: 3}
 --- !u!1 &1539926045
 GameObject:
   m_ObjectHideFlags: 0
@@ -16031,6 +16511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
   cardType: 3
+  cardSprite: {fileID: -4568267197518227054, guid: 6b67563acf8252748a71f18dbd55edbe, type: 3}
 --- !u!1 &1606800801
 GameObject:
   m_ObjectHideFlags: 0
@@ -16413,6 +16894,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 7
   cardType: 2
+  cardSprite: {fileID: -9185077304850961386, guid: 7e15b345a97edad428a5c3f89a320a43, type: 3}
 --- !u!1 &1650642397
 GameObject:
   m_ObjectHideFlags: 0
@@ -16569,6 +17051,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 10
   cardType: 1
+  cardSprite: {fileID: 1172884887934756520, guid: 3d2a0d06771644e48b04d7e1813b219c, type: 3}
 --- !u!1 &1652325844
 GameObject:
   m_ObjectHideFlags: 0
@@ -17115,6 +17598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 4
   cardType: 3
+  cardSprite: {fileID: -4568267197518227054, guid: 6b67563acf8252748a71f18dbd55edbe, type: 3}
 --- !u!1 &1752406390
 GameObject:
   m_ObjectHideFlags: 0
@@ -17767,9 +18251,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 406613679}
-        m_TargetAssemblyTypeName: DeckManager, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 406613681}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: GameStart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17973,6 +18457,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
   cardType: 3
+  cardSprite: {fileID: -6395484553944969681, guid: 7bf82066942c47c4e85a996af38bd7dd, type: 3}
 --- !u!1 &1783405424
 GameObject:
   m_ObjectHideFlags: 0
@@ -19026,6 +19511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 1
   cardType: 3
+  cardSprite: {fileID: -3500329787540529759, guid: 2ceec15311be8b34abef26061cc7886e, type: 3}
 --- !u!1 &2011541998
 GameObject:
   m_ObjectHideFlags: 0
@@ -19233,7 +19719,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 198729834}
+  - {fileID: 525190097}
   - {fileID: 1410792264}
+  - {fileID: 1427304893}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -19428,6 +19917,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   month: 9
   cardType: 3
+  cardSprite: {fileID: -6395484553944969681, guid: 7bf82066942c47c4e85a996af38bd7dd, type: 3}
 --- !u!1 &2055205266
 GameObject:
   m_ObjectHideFlags: 0
@@ -20387,6 +20877,53 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2112708497}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2131022466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2131022467}
+  - component: {fileID: 2131022468}
+  m_Layer: 0
+  m_Name: HandUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2131022467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131022466}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 85.29999, y: 78.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2131022468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131022466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e641a94d89268fe4f807cfe8f3a38691, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandUIManager
+  handPanelParent: {fileID: 1427304893}
+  handCardButtonPrefab: {fileID: 6919050056249126960, guid: 1a46aa49633c01e45a11fe0fdf400a12, type: 3}
+  gameManager: {fileID: 406613681}
 --- !u!1 &2137825990
 GameObject:
   m_ObjectHideFlags: 0
@@ -20519,7 +21056,9 @@ SceneRoots:
   - {fileID: 1504903428}
   - {fileID: 1926449106}
   - {fileID: 406613680}
-  - {fileID: 909922065}
   - {fileID: 150391490}
+  - {fileID: 909922065}
+  - {fileID: 1470799735}
+  - {fileID: 2131022467}
   - {fileID: 2021056703}
   - {fileID: 811793143}

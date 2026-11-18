@@ -20,6 +20,7 @@ public class CardController : MonoBehaviour
         List<GameObject> myHand = deckManager.GetMyHandCards();
         if (myHand.Contains(gameObject))
         {
+            if (!gameManager.CanPlayerClickHand()) return; //今手札をクリックできる状態かをチェック
             Debug.Log("手札("+ gameObject.name +")を選択");
             // 手札のカードがクリックされた場合（1回目＝選択、2回目＝決定の判定へ）
             gameManager.OnHandCardClicked(gameObject);

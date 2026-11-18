@@ -305,9 +305,6 @@ public class DeckManager : MonoBehaviour
         selectedCard.transform.SetParent(null); // 一旦親を外す
         Transform targetPosition = fieldSlots[slotIndex];
         StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromDisplay, player));
-        selectedCard.transform.SetParent(fieldSlots[slotIndex]);
-
-        fieldSlotCardLists[slotIndex].Add(selectedCard);
 
         //displayの並びをきれいにする処理はここに！
 
@@ -657,9 +654,6 @@ public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
         selectedCard.transform.SetParent(null); // 一旦親を外す
         Transform targetPosition = fieldSlots[slotIndex];
         StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromHand, player));
-        selectedCard.transform.SetParent(fieldSlots[slotIndex]);
-
-        fieldSlotCardLists[slotIndex].Add(selectedCard);
 
         // 3. 残った手札の並びを綺麗に再計算して詰める
         if (player == PlayerType.Player1) UpdateHandLayout(myHandCards, PlayerType.Player1);
@@ -700,7 +694,14 @@ public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
         card.transform.position = targetPosition;
         card.transform.rotation = targetSlot.rotation;
 
-        Debug.Log("カードがスライドして場にセットされた");
+        // ① ここで確実に親をセットする！
+        card.transform.SetParent(targetSlot);
+
+        // ② 場札のリストにもここで確実に追加する！
+        if (!fieldSlotCardLists[slotIndex].Contains(card))
+        {
+            fieldSlotCardLists[slotIndex].Add(card);
+        }
 
         // アニメーションが終わったこの瞬間に、枚数をチェックして回収を呼ぶ！
         if (fieldSlotCardLists[slotIndex].Count >= 2)
@@ -757,6 +758,11 @@ public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
         }
 
         Debug.Log("獲得した札の分類と回収が完了した");
+
+        if (gameManager != null)
+        {
+            gameManager.OnCardCollectionUpdated();
+        }
     }
 
     // カードの種類（CardType）から、対応する置き場を返す関数

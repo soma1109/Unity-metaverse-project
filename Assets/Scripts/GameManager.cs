@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     [Header("DeckManagerの参照")]
     [SerializeField] private DeckManager deckManager;
     [SerializeField] private YakuManager yakuManager;
+    [SerializeField] private UIManager uiManager;
+    [SerializeField] private HandUIManager handUIManager;
 
     // --- 選択状態を管理する変数 ---
     private GameObject selectedHandCard = null;        // 現在選択（持ち上げ）されている手札のカード
@@ -25,6 +27,18 @@ public class GameManager : MonoBehaviour
     private bool isProcessing = false; //何らかの処理中か
     private bool canDecideHandCard = false; //自分のターンで出す手札を選んだかどうか
 
+
+    // 外部（CardControllerなど）から「今手札をクリックしていいか？」を確認するための窓口
+    public bool CanPlayerClickHand()
+    {
+        // 自分のターンじゃなくて処理中なら、クリック不可！
+        if (!isMyTurn || isProcessing) return false;
+        // 手札を出す権利がすでに無くなっていても不可！
+        if (!canDecideHandCard) return false;
+
+        return true;
+    }
+
     public void GameStart()
     {
         StartCoroutine(GameStartRoutine());
@@ -40,9 +54,13 @@ public class GameManager : MonoBehaviour
 
         deckManager.OnGameStartButtonClicked();
 
+        handUIManager.RefreshHandUI(deckManager.GetMyHandCards());
+
         yield return new WaitForSeconds(1.0f);
 
         isProcessing = false; //処理中のフラグを解除
+
+        UpdateResult();
 
         //親がどちらかによって最初のターンを決める
         if (isPlayerParentFirst)
@@ -56,6 +74,11 @@ public class GameManager : MonoBehaviour
             Debug.Log(" 相手プレイヤー(CPU)が親です");
             isMyTurn = false;
             ExecuteCPUTurn();
+        }
+
+        if (uiManager != null)
+        {
+            uiManager.UpdateTurnText(isMyTurn);
         }
 
     }
@@ -586,8 +609,6 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("CPUの手札処理終了");
-
-        turnSwitching(PlayerType.Player2);
     }
 
     public void turnSwitching(PlayerType player)
@@ -603,6 +624,11 @@ public class GameManager : MonoBehaviour
             //相手のターンが終わった場合
             isMyTurn = true;
             canDecideHandCard = true;
+        }
+
+        if (uiManager != null)
+        {
+            uiManager.UpdateTurnText(isMyTurn);
         }
     }
 
@@ -624,6 +650,35 @@ public class GameManager : MonoBehaviour
         Debug.Log($"自分の点数: {myresult.totalScore}点 [{string.Join(", ", myresult.yakuNames)}]");
         Debug.Log($"相手の点数: {enemyresult.totalScore}点 [{string.Join(", ", enemyresult.yakuNames)}]");
     }
+
+    public void OnCardCollectionUpdated()
+    {
+        UpdateResult();
+    }
+
+    private void UpdateResult()
+    {
+        if (yakuManager == null) return;
+
+        PlayerCollection playerCollection = deckManager.GetPlayerCollection();
+        PlayerCollection enemyCollection = deckManager.GetEnemyCollection();
+
+        YakuResult myresult = yakuManager.EvaluateYaku(playerCollection);
+        YakuResult enemyresult = yakuManager.EvaluateYaku(enemyCollection);
+
+        // UIManagerに点数と役のリストをまとめて渡す
+        if (uiManager != null)
+        {
+            uiManager.UpdateScoreText(
+                myresult.totalScore, 
+                enemyresult.totalScore, 
+                myresult.yakuNames, 
+                enemyresult.yakuNames
+            );
+        }
+
+    }
+
 }
 
 
