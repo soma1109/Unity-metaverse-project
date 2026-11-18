@@ -38,3 +38,7 @@ ExportedObj/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# --- Large Font Assets ---
+Assets/Font/NotoSansJP-Medium SDF.asset
+Assets/Font/NotoSansJP-Medium SDF.asset.meta
