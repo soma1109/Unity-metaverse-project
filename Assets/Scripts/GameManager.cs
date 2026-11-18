@@ -230,6 +230,8 @@ public class GameManager : MonoBehaviour
             ExecuteNormalPlay(selectedHandCard, CardSource.FromHand, PlayerType.Player1);
 
             selectedHandCard = null;
+
+            handUIManager.RefreshHandUI(deckManager.GetMyHandCards()); //UI手札を更新
         }
     }
 
@@ -367,7 +369,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // --- パターン2：「初めて」手札のカードをクリックした場合 ---
+        // --- パターン2：「初めて」見せ札のカードをクリックした場合 ---
         if (selectedDisplayCard == null)
         {
             selectedDisplayCard = clickedDisplayCard;
@@ -436,6 +438,8 @@ public class GameManager : MonoBehaviour
                 ResetCardPosition(selectedDisplayCard);
                 deckManager.PlaceCardFromDisplayToField(selectedDisplayCard, clickedSlotIndex, PlayerType.Player1);
             }
+
+            handUIManager.RefreshHandUI(deckManager.GetMyHandCards());
             
             // 状態をすべてリセット
             isWaitingForFieldSelection = false;

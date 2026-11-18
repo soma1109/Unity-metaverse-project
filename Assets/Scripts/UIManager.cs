@@ -28,10 +28,7 @@ public class UIManager : MonoBehaviour
 
         // \n を使って改行を入れ、見やすくレイアウトする
         scoreText.text = 
-            $"<< YOU >>  score: {myScore}\n" +
-            $"           [{myYakuStr}]\n" +
-            $"--------------------\n" +
-            $"<< CPU >>  score: {enemyScore}\n" +
-            $"           [{enemyYakuStr}]";
+            $"<< YOU >>  score: {myScore}[{myYakuStr}]\n" +
+            $"<< CPU >>  score: {enemyScore}[{enemyYakuStr}]";
     }
 }
