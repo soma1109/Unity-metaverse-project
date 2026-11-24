@@ -69,6 +69,7 @@ public class DeckManager : MonoBehaviour
 {
     [Header("GameManagerの参照")]
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private FieldUIManager fieldUIManager;
 
     [Header("シーン内にあるすべてのカードのリスト")]
     [SerializeField] private List<GameObject> allCardsInScene = new List<GameObject>();
@@ -306,7 +307,9 @@ public class DeckManager : MonoBehaviour
         Transform targetPosition = fieldSlots[slotIndex];
         StartCoroutine(AnimateAndPlaceCard(selectedCard, targetPosition, slotIndex, CardSource.FromDisplay, player));
 
-        //displayの並びをきれいにする処理はここに！
+        //displayの並びをきれいにする処理はここに
+
+        fieldUIManager.RefreshFieldUI(GetFieldSlotCardLists());
 
         Debug.Log("見せ札からカードを場札のスロット " + slotIndex + " に配置しました！");
     }
@@ -714,6 +717,8 @@ public void PlaceCardFromDeckToSpecialSlot(PlayerType player)
             // 獲得エリアへの回収アニメーション（これもコルーチン）をここでスタート！
             yield return StartCoroutine(CollectAndCategorizeCards(collectedCards, player, this));
         }
+
+        fieldUIManager.RefreshFieldUI(GetFieldSlotCardLists());
 
         if (gameManager != null)
         {

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private YakuManager yakuManager;
     [SerializeField] private UIManager uiManager;
     [SerializeField] private HandUIManager handUIManager;
+    [SerializeField] private FieldUIManager fieldUIManager;
 
     // --- 選択状態を管理する変数 ---
     private GameObject selectedHandCard = null;        // 現在選択（持ち上げ）されている手札のカード
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour
         deckManager.OnGameStartButtonClicked();
 
         handUIManager.RefreshHandUI(deckManager.GetMyHandCards());
+        fieldUIManager.RefreshFieldUI(deckManager.GetFieldSlotCardLists());
 
         yield return new WaitForSeconds(1.0f);
 
@@ -187,6 +189,7 @@ public class GameManager : MonoBehaviour
 
             selectedHandCard = clickedCard;
             LiftCardUp(selectedHandCard);
+            handUIManager.SetLiftedCardBy3D(selectedHandCard);
             Debug.Log(clickedCard.name + " を選択したで（1回目のクリック）");
 
             // 新しく選んだカードについて、同じ月の場札が複数あるか事前にチェックする
@@ -199,6 +202,7 @@ public class GameManager : MonoBehaviour
         {
             selectedHandCard = clickedCard;
             LiftCardUp(selectedHandCard);
+            handUIManager.SetLiftedCardBy3D(selectedHandCard);
             Debug.Log(clickedCard.name + " を選択したで（1回目のクリック）");
 
             // 選んだカードについて、同じ月の場札が複数あるか事前にチェックする
@@ -232,6 +236,7 @@ public class GameManager : MonoBehaviour
             selectedHandCard = null;
 
             handUIManager.RefreshHandUI(deckManager.GetMyHandCards()); //UI手札を更新
+            fieldUIManager.RefreshFieldUI(deckManager.GetFieldSlotCardLists());
         }
     }
 
@@ -328,6 +333,7 @@ public class GameManager : MonoBehaviour
             {
                 deckManager.PlaceCardFromDisplayToField(selectedCard, targetSlotIndex, player);
             }
+            fieldUIManager.RefreshFieldUI(deckManager.GetFieldSlotCardLists());
             Debug.Log("同じ月の場札が1枚だったので自動で合わせました！");
         }
         else
@@ -336,13 +342,14 @@ public class GameManager : MonoBehaviour
             if (emptySlotIndex != -1)
             {
                 if (source == CardSource.FromHand)
-                    {
-                        deckManager.PlaceCardFromHandToField(selectedCard, emptySlotIndex, player);
-                    }
-                    else if (source == CardSource.FromDisplay)
-                    {
-                        deckManager.PlaceCardFromDisplayToField(selectedCard, emptySlotIndex, player);
-                    }
+                {
+                    deckManager.PlaceCardFromHandToField(selectedCard, emptySlotIndex, player);
+                }
+                else if (source == CardSource.FromDisplay)
+                {
+                    deckManager.PlaceCardFromDisplayToField(selectedCard, emptySlotIndex, player);
+                }
+                fieldUIManager.RefreshFieldUI(deckManager.GetFieldSlotCardLists());
                 Debug.Log("同じ月の場札がないため、一番若い空きスロットに置きました！");
             }
             else
@@ -440,6 +447,7 @@ public class GameManager : MonoBehaviour
             }
 
             handUIManager.RefreshHandUI(deckManager.GetMyHandCards());
+            fieldUIManager.RefreshFieldUI(deckManager.GetFieldSlotCardLists());
             
             // 状態をすべてリセット
             isWaitingForFieldSelection = false;
@@ -511,35 +519,6 @@ public class GameManager : MonoBehaviour
         turnSwitching(player);
     }
 
-    // 指定した位置（またはオブジェクト）へ、時間をかけて滑らかに移動させるコルーチン
-    private IEnumerator SlideToPosition(GameObject card, Vector3 targetPosition, Quaternion targetRotation, float duration)
-    {
-        // 1. 移動を開始する直前の「世界座標（World Position）」と「回転」を記録する
-        Vector3 startPos = card.transform.position;
-        Quaternion startRot = card.transform.rotation;
-
-        float elapsedTime = 0f;
-
-        // 2. 指定した時間（duration）が経過するまで毎フレーム少しずつ動かす
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime; // 経過時間を進める
-            float t = elapsedTime / duration; // 0.0 から 1.0 の進捗率を計算
-
-            // Start から Target までを割合 t で滑らかにつなぐ（Lerp）
-            card.transform.position = Vector3.Lerp(startPos, targetPosition, t);
-            card.transform.rotation = Quaternion.Lerp(startRot, targetRotation, t);
-
-            yield return null; // 次のフレームまで待つ
-        }
-
-        // 3. 最後にきっちり目標の位置と回転に合わせる（ズレ防止）
-        card.transform.position = targetPosition;
-        card.transform.rotation = targetRotation;
-    }
-
-    
-
     // 【共通の判定関数】指定したカードを置くべき場所をチェックする
     // 戻り値：判定結果のデータ（何枚マッチしたか、スロットのリスト等）
     private CardMatchResult EvaluateCardMatching(GameObject card)
@@ -610,6 +589,7 @@ public class GameManager : MonoBehaviour
         if (targetSlotIndex != -1)
         {
             deckManager.PlaceCardFromHandToField(chosenCard, targetSlotIndex, PlayerType.Player2);
+            fieldUIManager.RefreshFieldUI(deckManager.GetFieldSlotCardLists());
         }
 
         Debug.Log("CPUの手札処理終了");
